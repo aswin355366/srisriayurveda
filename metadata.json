@@ -1,0 +1,6 @@
+{
+  "name": "SriSri Ayurveda Wellness Centre, Thrissur",
+  "description": "Traditional Kerala Ayurveda clinic and wellness packages in Thrissur led by Dr. Anagha Aswin — offering rejuvenation, one-day stress relief, joint care, women's wellness, and home service.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
