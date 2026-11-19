@@ -401,7 +401,7 @@ export default function App() {
             </div>
             <div className="px-5 py-4">
               <div className="font-display text-xl font-semibold tabular-nums text-[#1A241E]">
-                10 Packages
+                {WELLNESS_PACKAGES.length} Packages
               </div>
               <div className="mt-0.5 text-xs text-[#556158]">
                 One-day, rejuvenation & care
@@ -741,7 +741,7 @@ export default function App() {
           className="border-t border-[#E2E6DF] bg-[#F2F4F0]/70 py-14 sm:py-16"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
               <div className="lg:col-span-5">
                 <p className="text-xs font-semibold tracking-wide text-[#B45F27] uppercase">
                   Home Service & Post-Delivery Care
@@ -762,14 +762,18 @@ export default function App() {
                       aria-hidden="true"
                       className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1E4631]"
                     />
-                    <span>Geriatric wellness & mobility support for seniors</span>
+                    <span>
+                      <strong className="font-semibold">Amritam Geriatric Rejuvenation:</strong>{' '}
+                      Doctor consultation, certified therapist, personalized Ayurveda, therapeutic
+                      yoga &amp; pranayama at home
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span
                       aria-hidden="true"
                       className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1E4631]"
                     />
-                    <span>Back pain, disc strain, joint care & neuromuscular disorders</span>
+                    <span>Back pain, disc strain, joint care &amp; neuromuscular disorders</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span
@@ -777,22 +781,22 @@ export default function App() {
                       className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1E4631]"
                     />
                     <span>
-                      Complete 15-step mother & baby Prasavaraksha (Vethukuli, Udaraveshtanam,
-                      Podikkizhi, baby bath, diet & counseling)
+                      Complete 15-step mother &amp; baby Prasavaraksha (Vethukuli, Udaraveshtanam,
+                      Podikkizhi, baby bath, diet &amp; counseling)
                     </span>
                   </li>
                 </ul>
 
-                <div className="mt-6">
+                <div className="mt-6 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={() =>
                       handleSelectForBooking(
-                        'SriSri Home Service / Prasavaraksha Care',
+                        'Amritam Geriatric Rejuvenation Home Service',
                         'home'
                       )
                     }
-                    className="inline-flex items-center gap-2 rounded-lg bg-[#1E4631] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#163625]"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#1E4631] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
                   >
                     <Home className="h-4 w-4" />
                     Request Home Service Visit
@@ -800,71 +804,147 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-7">
-                <div className="overflow-hidden rounded-xl border border-[#E2E6DF] bg-white p-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:col-span-7">
+                <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-[#E2E6DF] bg-white p-3">
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setModalPoster({
+                          title: 'Amritam Geriatric Rejuvenation Home Service',
+                          subtitle:
+                            'പ്രായത്തിന്റെ അവശതകൾക്ക് ആയുർവേദത്തിന്റെ സാന്ത്വനം; സമ്പൂർണ്ണ പരിചരണം ഇനി നിങ്ങളുടെ വീട്ടിൽ',
+                          image: '/assets/aistudio/final_-2_c07cdc72.jpg',
+                          packageIdForBooking:
+                            'Amritam Geriatric Rejuvenation (അമൃതം ജെറിയാട്രിക് റീജുവനേഷൻ ഹോം സർവീസ്)',
+                        })
+                      }
+                      className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
+                    >
+                      <img
+                        src="/assets/aistudio/final_-2_c07cdc72.jpg"
+                        alt="Amritam Geriatric Rejuvenation Home Service poster"
+                        referrerPolicy="no-referrer"
+                        className="h-64 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                      />
+                      <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-medium text-white">
+                        <ZoomIn className="h-3.5 w-3.5" />
+                        View
+                      </span>
+                    </button>
+                    <p className="mt-2.5 text-sm font-semibold text-[#1A241E]">
+                      Amritam Geriatric Care
+                    </p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-[#556158]">
+                      Doctor consultation, certified therapist, personalized Ayurveda, therapeutic yoga &amp; pranayama.
+                    </p>
+                  </div>
                   <button
                     type="button"
                     onClick={() =>
-                      setModalPoster({
-                        title: 'Ayurvedic Prasavaraksha (Post-Delivery Care)',
-                        subtitle: 'അമ്മയുടെയും കുഞ്ഞിന്റെയും ആരോഗ്യ സംരക്ഷണം ഇനി നിങ്ങളുടെ വീട്ടിൽ',
-                        image:
-                          '/assets/aistudio/Untitled_-_08_June_2026_at_14.23.46_84304245.png',
-                        packageIdForBooking:
-                          'Ayurvedic Prasavaraksha (ആയുർവേദ പ്രസവരക്ഷ)',
-                      })
+                      handleSelectForBooking(
+                        'Amritam Geriatric Rejuvenation (അമൃതം ജെറിയാട്രിക് റീജുവനേഷൻ ഹോം സർവീസ്)',
+                        'home'
+                      )
                     }
-                    className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
+                    className="mt-3 w-full rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3 py-1.5 text-xs font-medium text-[#1E4631] transition-colors hover:border-[#1E4631] hover:bg-white"
                   >
-                    <img
-                      src="/assets/aistudio/Untitled_-_08_June_2026_at_14.23.46_84304245.png"
-                      alt="Ayurvedic Prasavaraksha mother and baby home care poster"
-                      referrerPolicy="no-referrer"
-                      className="h-72 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-                    />
-                    <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-medium text-white">
-                      <ZoomIn className="h-3.5 w-3.5" />
-                      View
-                    </span>
+                    Book Amritam Home Care
                   </button>
-                  <p className="mt-2.5 text-sm font-semibold text-[#1A241E]">
-                    Ayurveda Prasavaraksha
-                  </p>
-                  <p className="text-xs text-[#556158]">
-                    Mother & newborn care at home
-                  </p>
                 </div>
 
-                <div className="overflow-hidden rounded-xl border border-[#E2E6DF] bg-white p-3">
+                <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-[#E2E6DF] bg-white p-3">
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setModalPoster({
+                          title: 'Ayurvedic Prasavaraksha (Post-Delivery Care)',
+                          subtitle: 'അമ്മയുടെയും കുഞ്ഞിന്റെയും ആരോഗ്യ സംരക്ഷണം ഇനി നിങ്ങളുടെ വീട്ടിൽ',
+                          image:
+                            '/assets/aistudio/Untitled_-_08_June_2026_at_14.23.46_84304245.png',
+                          packageIdForBooking:
+                            'Ayurvedic Prasavaraksha (ആയുർവേദ പ്രസവരക്ഷ)',
+                        })
+                      }
+                      className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
+                    >
+                      <img
+                        src="/assets/aistudio/Untitled_-_08_June_2026_at_14.23.46_84304245.png"
+                        alt="Ayurvedic Prasavaraksha mother and baby home care poster"
+                        referrerPolicy="no-referrer"
+                        className="h-64 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                      />
+                      <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-medium text-white">
+                        <ZoomIn className="h-3.5 w-3.5" />
+                        View
+                      </span>
+                    </button>
+                    <p className="mt-2.5 text-sm font-semibold text-[#1A241E]">
+                      Ayurveda Prasavaraksha
+                    </p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-[#556158]">
+                      Mother &amp; newborn postnatal care delivered gently at home.
+                    </p>
+                  </div>
                   <button
                     type="button"
                     onClick={() =>
-                      setModalPoster({
-                        title: 'SriSri Ayurveda Home Service',
-                        subtitle: 'Geriatric, Joint, Back Pain & Post-Delivery Home Visits',
-                        image: '/assets/aistudio/home_service_new_9f602148.png',
-                        packageIdForBooking: 'SriSri Home Service Care',
-                      })
+                      handleSelectForBooking(
+                        'Ayurvedic Prasavaraksha (ആയുർവേദ പ്രസവരക്ഷ)',
+                        'home'
+                      )
                     }
-                    className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
+                    className="mt-3 w-full rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3 py-1.5 text-xs font-medium text-[#1E4631] transition-colors hover:border-[#1E4631] hover:bg-white"
                   >
-                    <img
-                      src="/assets/aistudio/home_service_new_9f602148.png"
-                      alt="SriSri Ayurveda Home Service poster"
-                      referrerPolicy="no-referrer"
-                      className="h-72 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-                    />
-                    <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-medium text-white">
-                      <ZoomIn className="h-3.5 w-3.5" />
-                      View
-                    </span>
+                    Book Prasavaraksha
                   </button>
-                  <p className="mt-2.5 text-sm font-semibold text-[#1A241E]">
-                    Home Therapy Visits
-                  </p>
-                  <p className="text-xs text-[#556158]">
-                    Senior care, back pain & wellness
-                  </p>
+                </div>
+
+                <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-[#E2E6DF] bg-white p-3">
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setModalPoster({
+                          title: 'SriSri Ayurveda Home Service',
+                          subtitle: 'Geriatric, Joint, Back Pain & Post-Delivery Home Visits',
+                          image: '/assets/aistudio/home_service_new_9f602148.png',
+                          packageIdForBooking: 'SriSri Home Service Care (ശ്രീ ശ്രീ ഹോം സർവീസ്)',
+                        })
+                      }
+                      className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
+                    >
+                      <img
+                        src="/assets/aistudio/home_service_new_9f602148.png"
+                        alt="SriSri Ayurveda Home Service poster"
+                        referrerPolicy="no-referrer"
+                        className="h-64 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                      />
+                      <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-medium text-white">
+                        <ZoomIn className="h-3.5 w-3.5" />
+                        View
+                      </span>
+                    </button>
+                    <p className="mt-2.5 text-sm font-semibold text-[#1A241E]">
+                      Home Therapy Visits
+                    </p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-[#556158]">
+                      Back pain, disc issues, joint care &amp; neuromuscular support at home.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSelectForBooking(
+                        'SriSri Home Service Care (ശ്രീ ശ്രീ ഹോം സർവീസ്)',
+                        'home'
+                      )
+                    }
+                    className="mt-3 w-full rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3 py-1.5 text-xs font-medium text-[#1E4631] transition-colors hover:border-[#1E4631] hover:bg-white"
+                  >
+                    Book Home Visit
+                  </button>
                 </div>
               </div>
             </div>
@@ -1428,7 +1508,7 @@ export default function App() {
               </p>
               <p className="text-xs text-[#556158]">
                 {CLINIC_INFO.doctorName} · Pullat Ln, Near Thiruvambady Temple, Thrissur ·{' '}
-                {CLINIC_INFO.phoneDisplay}
+                {CLINIC_INFO.phoneDisplay} · {CLINIC_INFO.websiteDomain}
               </p>
             </div>
           </div>

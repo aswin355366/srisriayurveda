@@ -47,6 +47,8 @@ export const CLINIC_INFO = {
   phoneRaw: '9400967551',
   telHref: 'tel:+919400967551',
   whatsappBase: 'https://wa.me/919400967551',
+  websiteDomain: 'www.srisriayu.com',
+  websiteUrl: 'https://www.srisriayu.com',
   googleBusinessUrl: 'https://share.google/lerZByQwKda1jb3hD',
   googleRating: '4.9',
   logoImage: '/assets/aistudio/Logo_3da16dce.png',
@@ -255,6 +257,24 @@ export const WELLNESS_PACKAGES: WellnessPackage[] = [
     ],
     poster: '/assets/aistudio/Untitled_-_13_July_2026_at_14.39.38_965bb50e.png',
     secondaryPoster: '/assets/aistudio/home_service_new_9f602148.png',
+  },
+  {
+    id: 'amritam-geriatric',
+    name: 'Amritam Geriatric Rejuvenation',
+    malayalamName: 'അമൃതം ജെറിയാട്രിക് റീജുവനേഷൻ ഹോം സർവീസ്',
+    category: 'home-care',
+    categoryLabel: 'Geriatric Home Care',
+    setting: 'Home Service · Senior Care',
+    summary:
+      'Gentle Ayurvedic rejuvenation and daily mobility support brought right to your home for elderly parents and seniors.',
+    malayalamNote: 'പ്രായത്തിന്റെ അവശതകൾക്ക് ആയുർവേദത്തിന്റെ സാന്ത്വനം; സമ്പൂർണ്ണ പരിചരണം ഇനി നിങ്ങളുടെ വീട്ടിൽ',
+    highlights: [
+      'Doctor Consultation & Personalized Ayurveda',
+      'Certified Therapist visits at home',
+      'Therapeutic Yoga guidance',
+      'Pranayama & gentle breathing care',
+    ],
+    poster: '/assets/aistudio/final_-2_c07cdc72.jpg',
   },
 ];
 
