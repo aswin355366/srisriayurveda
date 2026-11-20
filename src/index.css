@@ -37,11 +37,32 @@
   animation-play-state: paused;
 }
 
+@keyframes scroll-up {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-scroll-up {
+  display: flex;
+  flex-direction: column;
+  animation: scroll-up 55s linear infinite;
+}
+
+.animate-scroll-up-paused,
+.marquee-vertical-wrapper:hover .animate-scroll-up {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .animate-scroll-ltr {
+  .animate-scroll-ltr,
+  .animate-scroll-up {
     animation: none;
   }
   *, *::before, *::after {

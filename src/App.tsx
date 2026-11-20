@@ -15,60 +15,94 @@ import {
   Star,
   Pause,
   Play,
+  FileText,
+  ChevronDown,
 } from 'lucide-react';
 import {
   CLINIC_INFO,
   PACKAGE_FILTERS,
   WELLNESS_PACKAGES,
   INDIVIDUAL_THERAPIES,
+  EYE_TREATMENT_HEAD,
+  EYE_TREATMENTS,
+  HAIR_TREATMENT_HEAD,
+  HAIR_TREATMENTS,
+  SKIN_TREATMENT_HEAD,
+  SKIN_TREATMENTS,
+  FOOT_TREATMENT_HEAD,
+  FOOT_TREATMENTS,
   EDUCATIONAL_POSTERS,
   GOOGLE_REVIEWS,
   type PackageCategory,
 } from './data/clinicData';
 import { PosterModal } from './components/PosterModal';
+import { ConsultationFormModal } from './components/ConsultationFormModal';
 
 interface ActiveModalState {
   title: string;
   subtitle?: string;
   image: string;
+  secondaryImage?: string;
+  description?: string;
+  malayalamNote?: string;
+  includedItems?: string[];
+  defaultSelectAll?: boolean;
+  idealFor?: string;
   packageIdForBooking?: string;
+  bookingVisitType?: 'clinic' | 'home';
 }
 
-const HERO_SPOTLIGHT_OPTIONS = [
-  {
-    id: 'one-day-break',
-    label: 'One-Day Break',
-    title: 'One-Day Wellness Break',
-    subtitle: 'Abhyangam, Steam & Mukhalepam · വൺ-ഡേ പാക്കേജ്',
-    image:
-      '/assets/aistudio/Untitled_-_02_February_2026_at_17.14.13__3___1___1___1___2___1___16__9943f644.png',
-  },
-  {
-    id: 'ayur-glow',
-    label: 'Ayur Glow',
-    title: 'Ayur Glow Rejuvenation Package',
-    subtitle: '10-Step Body Purification & Immunity Care',
-    image: '/assets/aistudio/A_new_2fb88559.png',
-  },
-  {
-    id: 'harmony-mind-body',
-    label: 'Harmony',
-    title: 'Harmony Mind & Body Package',
-    subtitle: '11-Step Shirodhara & Special Oil Care',
-    image:
-      '/assets/aistudio/Untitled_-_08_September_2026_at_13.42.50_302e8469.png',
-  },
-];
+function InstagramIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
 
 export default function App() {
   const [selectedFilter, setSelectedFilter] = useState<PackageCategory>('all');
   const [reviewsPaused, setReviewsPaused] = useState(false);
-  const [heroSlideIdx, setHeroSlideIdx] = useState(0);
+  const [heroReviewsPaused, setHeroReviewsPaused] = useState(false);
   const [secondaryPosterToggle, setSecondaryPosterToggle] = useState<
     Record<string, boolean>
   >({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalPoster, setModalPoster] = useState<ActiveModalState | null>(null);
+  const [onlineConsultOpen, setOnlineConsultOpen] = useState(false);
+  const [panchakarmaOpen, setPanchakarmaOpen] = useState(false);
+  const [eyeTreatmentsOpen, setEyeTreatmentsOpen] = useState(false);
+  const [hairTreatmentsOpen, setHairTreatmentsOpen] = useState(false);
+  const [skinTreatmentsOpen, setSkinTreatmentsOpen] = useState(false);
+  const [footTreatmentsOpen, setFootTreatmentsOpen] = useState(false);
 
   // Booking form state
   const bookingSectionRef = useRef<HTMLDivElement>(null);
@@ -79,12 +113,14 @@ export default function App() {
   );
   const [visitType, setVisitType] = useState<'clinic' | 'home'>('clinic');
   const [preferredDate, setPreferredDate] = useState('');
+  const [selectedPackageItems, setSelectedPackageItems] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
   const [formError, setFormError] = useState('');
   const [submittedRequest, setSubmittedRequest] = useState<{
     name: string;
     phone: string;
     service: string;
+    selectedItems: string[];
     visitType: 'clinic' | 'home';
     date: string;
     notes: string;
@@ -95,12 +131,17 @@ export default function App() {
       ? WELLNESS_PACKAGES
       : WELLNESS_PACKAGES.filter((pkg) => pkg.category === selectedFilter);
 
+  const panchakarmaTherapy = INDIVIDUAL_THERAPIES.find((t) => t.id === 'panchakarma');
+  const panchakarmaSubTherapies = INDIVIDUAL_THERAPIES.filter((t) => t.id !== 'panchakarma');
+
   const handleSelectForBooking = (
     serviceLabel: string,
-    mode: 'clinic' | 'home' = 'clinic'
+    mode: 'clinic' | 'home' = 'clinic',
+    selectedItems: string[] = []
   ) => {
     setSelectedService(serviceLabel);
     setVisitType(mode);
+    setSelectedPackageItems(selectedItems);
     setSubmittedRequest(null);
     setFormError('');
     bookingSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -125,6 +166,7 @@ export default function App() {
       name: cleanedName,
       phone: digitsOnly,
       service: selectedService,
+      selectedItems: selectedPackageItems,
       visitType,
       date: preferredDate || 'Flexible / Next available',
       notes: notes.trim(),
@@ -141,13 +183,35 @@ export default function App() {
       `• Visit Type: ${req.visitType === 'home' ? 'Home Service' : 'At Clinic (Pullat Ln)'}`,
       `• Preferred Date: ${req.date}`,
     ];
+    if (req.selectedItems.length > 0) {
+      lines.push(`• Selected Items Needed:`);
+      req.selectedItems.forEach((item) => lines.push(`   - ${item}`));
+    }
     if (req.notes) {
       lines.push(`• Notes: ${req.notes}`);
     }
     return `${CLINIC_INFO.whatsappBase}?text=${encodeURIComponent(lines.join('\n'))}`;
   };
 
-  const activeHeroSlide = HERO_SPOTLIGHT_OPTIONS[heroSlideIdx];
+  const openPackageById = (pkgId: string, overrideImage?: string) => {
+    const pkg = WELLNESS_PACKAGES.find((item) => item.id === pkgId);
+    if (!pkg) return;
+    setModalPoster({
+      title: pkg.name,
+      subtitle: pkg.malayalamName
+        ? `${pkg.malayalamName} · ${pkg.setting}`
+        : pkg.setting,
+      image: overrideImage ?? pkg.poster,
+      secondaryImage: pkg.secondaryPoster,
+      description: pkg.fullDescription,
+      malayalamNote: pkg.malayalamNote,
+      includedItems: pkg.includedSteps,
+      defaultSelectAll: true,
+      idealFor: pkg.idealFor,
+      packageIdForBooking: `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
+      bookingVisitType: pkg.category === 'home-care' ? 'home' : 'clinic',
+    });
+  };
 
   return (
     <div id="top" className="min-h-screen bg-[#FAFAF7] text-[#1A241E]">
@@ -191,12 +255,13 @@ export default function App() {
             >
               Home Care
             </a>
-            <a
-              href="#posters"
+            <button
+              type="button"
+              onClick={() => setOnlineConsultOpen(true)}
               className="hover:text-[#1E4631] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
             >
-              Clinic Posters
-            </a>
+              Online Consultation
+            </button>
             <a
               href="#location"
               className="hover:text-[#1E4631] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
@@ -205,7 +270,27 @@ export default function App() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <a
+              href={CLINIC_INFO.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SriSri Ayurveda on Instagram"
+              title="Instagram"
+              className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#E2E6DF] bg-white text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+            >
+              <InstagramIcon className="h-4 w-4" />
+            </a>
+            <a
+              href={CLINIC_INFO.facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SriSri Ayurveda on Facebook"
+              title="Facebook"
+              className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#E2E6DF] bg-white text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+            >
+              <FacebookIcon className="h-4 w-4" />
+            </a>
             <a
               href="#book"
               className="hidden sm:inline-flex items-center justify-center rounded-lg bg-[#1E4631] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
@@ -249,6 +334,16 @@ export default function App() {
               >
                 Home Service & Prasavaraksha
               </a>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setOnlineConsultOpen(true);
+                }}
+                className="py-1.5 text-left hover:text-[#1E4631]"
+              >
+                Online Consultation
+              </button>
               <a
                 href="#posters"
                 onClick={() => setMobileMenuOpen(false)}
@@ -263,6 +358,26 @@ export default function App() {
               >
                 Location & Hours
               </a>
+              <div className="flex items-center gap-3 pt-1">
+                <a
+                  href={CLINIC_INFO.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#D4DAD0] bg-white px-3 py-2 text-xs font-medium text-[#1A241E] hover:border-[#1E4631] hover:text-[#1E4631]"
+                >
+                  <InstagramIcon className="h-4 w-4" />
+                  Instagram
+                </a>
+                <a
+                  href={CLINIC_INFO.facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#D4DAD0] bg-white px-3 py-2 text-xs font-medium text-[#1A241E] hover:border-[#1E4631] hover:text-[#1E4631]"
+                >
+                  <FacebookIcon className="h-4 w-4" />
+                  Facebook
+                </a>
+              </div>
               <a
                 href="#book"
                 onClick={() => setMobileMenuOpen(false)}
@@ -277,150 +392,236 @@ export default function App() {
 
       <main>
         {/* Hero Section */}
-        <section className="mx-auto max-w-6xl px-4 pt-8 pb-12 sm:px-6 lg:px-8 lg:pt-12 lg:pb-14">
-          <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-12 lg:gap-10">
-            {/* Hero Copy */}
-            <div className="flex flex-col justify-center lg:col-span-7">
-              <p className="text-sm font-medium text-[#556158]">
-                {CLINIC_INFO.brandFull} · {CLINIC_INFO.malayalamBrand} · Thrissur
-              </p>
+        <section className="relative overflow-hidden bg-[#FAFAF7]">
+          {/* Subtle clinic exterior background */}
+          <img
+            src="/assets/aistudio/unnamed_ebe50dc5.webp"
+            alt=""
+            aria-hidden="true"
+            referrerPolicy="no-referrer"
+            className="pointer-events-none absolute -top-20 left-0 h-[calc(100%+5rem)] w-full object-cover object-[center_65%] opacity-60 select-none"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FAFAF7]/68 via-[#FAFAF7]/40 to-[#FAFAF7]/20"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#FAFAF7]/25 via-transparent to-[#FAFAF7]"
+          />
 
-              <h1
-                className="mt-3 font-display font-semibold tracking-tight text-[#1A241E] text-balance"
-                style={{ fontSize: 'clamp(2.1rem, 3.8vw, 3.25rem)', lineHeight: 1.12 }}
-              >
-                Friendly, traditional Kerala Ayurveda wellness packages close to home.
-              </h1>
+          <div className="relative z-10 mx-auto max-w-6xl px-4 pt-8 pb-12 sm:px-6 lg:px-8 lg:pt-12 lg:pb-14">
+            <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-12 lg:gap-10">
+              {/* Hero Copy */}
+              <div className="flex flex-col justify-center lg:col-span-7">
+                <p className="text-sm font-medium text-[#556158]">
+                  {CLINIC_INFO.brandFull} · {CLINIC_INFO.malayalamBrand} · Thrissur
+                </p>
 
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-[#3F4B43]">
-                A small, welcoming neighbourhood Ayurveda clinic near Thiruvambady Temple, Thrissur,
-                led by <strong className="font-semibold text-[#1A241E]">{CLINIC_INFO.doctorName}</strong>.
-                We focus on practical wellness packages, single-day stress breaks, joint care, and gentle
-                home visits—honest care for everyday families without luxury spa markups.
-              </p>
-
-              <div className="mt-7 flex flex-wrap items-center gap-4">
-                <a
-                  href="#packages"
-                  className="inline-flex items-center gap-2 rounded-lg bg-[#1E4631] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                <h1
+                  className="mt-3 font-display font-semibold tracking-tight text-[#1A241E] text-balance"
+                  style={{ fontSize: 'clamp(2.1rem, 3.8vw, 3.25rem)', lineHeight: 1.12 }}
                 >
-                  Explore Wellness Packages
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href={CLINIC_INFO.telHref}
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#D4DAD0] bg-white px-4 py-3 text-sm font-medium text-[#1A241E] transition-colors hover:bg-[#F2F4F0] whitespace-nowrap shrink-0"
-                >
-                  <Phone className="h-4 w-4 text-[#1E4631]" />
-                  Call {CLINIC_INFO.phoneDisplay}
-                </a>
-              </div>
+                  Friendly, traditional Kerala Ayurveda wellness packages close to home.
+                </h1>
 
-              <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-[#556158]">
-                <span>Pullat Lane, near Thiruvambady Temple</span>
-                <span aria-hidden="true">·</span>
-                <span>{CLINIC_INFO.googleRating} Stars on Google Reviews</span>
-                <span aria-hidden="true">·</span>
-                <span>Clinic & Home Visits</span>
-              </div>
-            </div>
+                <p className="mt-4 max-w-xl text-base leading-relaxed text-[#3F4B43]">
+                  A small, welcoming neighbourhood Ayurveda clinic near Thiruvambady Temple, Thrissur,
+                  led by <strong className="font-semibold text-[#1A241E]">{CLINIC_INFO.doctorName}</strong>.
+                  We focus on practical wellness packages, single-day stress breaks, joint care, and gentle
+                  home visits—honest care for everyday families without luxury spa markups.
+                </p>
 
-            {/* Hero Visual Spotlight */}
-            <div className="lg:col-span-5">
-              <div className="flex h-full flex-col justify-between rounded-xl border border-[#1C402B] bg-[#1C402B] p-4 text-white">
-                <div className="flex items-center justify-between gap-2 pb-3">
-                  <span className="text-xs font-medium text-white/85 truncate">
-                    {activeHeroSlide.title}
-                  </span>
-                  <div className="flex items-center gap-1 rounded-lg bg-white/10 p-1">
-                    {HERO_SPOTLIGHT_OPTIONS.map((opt, idx) => (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        onClick={() => setHeroSlideIdx(idx)}
-                        className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                          heroSlideIdx === idx
-                            ? 'bg-white text-[#1C402B]'
-                            : 'text-white/80 hover:text-white'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setModalPoster({
-                      title: activeHeroSlide.title,
-                      subtitle: activeHeroSlide.subtitle,
-                      image: activeHeroSlide.image,
-                      packageIdForBooking: activeHeroSlide.title,
-                    })
-                  }
-                  className="group relative flex flex-1 items-center justify-center overflow-hidden rounded-lg bg-[#163423] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  aria-label={`View full poster for ${activeHeroSlide.title}`}
-                >
-                  <img
-                    src={activeHeroSlide.image}
-                    alt={activeHeroSlide.title}
-                    referrerPolicy="no-referrer"
-                    className="max-h-[380px] w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-                  />
-                  <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 rounded-md bg-black/65 px-2.5 py-1 text-xs font-medium text-white">
-                    <ZoomIn className="h-3.5 w-3.5" />
-                    View Poster
-                  </span>
-                </button>
-
-                <div className="mt-3 flex items-center justify-between gap-3 pt-1 text-xs text-white/80">
-                  <span className="truncate">{activeHeroSlide.subtitle}</span>
+                <div className="mt-7 flex flex-wrap items-center gap-3">
+                  <a
+                    href="#packages"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#1E4631] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                  >
+                    Explore Wellness Packages
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
                   <button
                     type="button"
-                    onClick={() => handleSelectForBooking(activeHeroSlide.title)}
-                    className="font-medium text-white underline underline-offset-4 hover:text-white/90 whitespace-nowrap shrink-0"
+                    onClick={() => setOnlineConsultOpen(true)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-[#1E4631] bg-white px-4 py-3 text-sm font-medium text-[#1E4631] transition-colors hover:bg-[#F2F7F4] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
                   >
-                    Book This
+                    <FileText className="h-4 w-4" />
+                    Online Consultation
                   </button>
+                  <a
+                    href={CLINIC_INFO.telHref}
+                    className="inline-flex items-center gap-2 rounded-lg border border-[#D4DAD0] bg-white px-4 py-3 text-sm font-medium text-[#1A241E] transition-colors hover:bg-[#F2F4F0] whitespace-nowrap shrink-0"
+                  >
+                    <Phone className="h-4 w-4 text-[#1E4631]" />
+                    Call {CLINIC_INFO.phoneDisplay}
+                  </a>
+                </div>
+
+                <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-[#4A564D]">
+                  <span>Pullat Lane, near Thiruvambady Temple</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{CLINIC_INFO.googleRating} Stars on Google Reviews</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Clinic & Home Visits</span>
+                </div>
+              </div>
+
+              {/* Hero Trust Card: Auto-Scrolling Google Reviews */}
+              <div className="lg:col-span-5">
+                <div className="flex h-full flex-col justify-between rounded-xl border border-[#1C402B] bg-[#1C402B] p-5 text-white">
+                  {/* Top Header: Google Reviews Logo + 4.9 Rating + Pause/Play */}
+                  <div className="flex items-center justify-between gap-3 border-b border-white/15 pb-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={CLINIC_INFO.googleBadgeImage}
+                        alt="Google Reviews"
+                        referrerPolicy="no-referrer"
+                        className="h-11 w-16 shrink-0 rounded-lg border border-white/20 bg-white px-1.5 py-0.5 object-contain"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-display text-lg font-semibold tabular-nums text-white">
+                            {CLINIC_INFO.googleRating}
+                          </span>
+                          <div
+                            className="flex items-center gap-0.5"
+                            aria-label={`${CLINIC_INFO.googleRating} out of 5 stars on Google`}
+                          >
+                            {Array.from({ length: 5 }).map((_, starIdx) => (
+                              <Star
+                                key={starIdx}
+                                className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-xs text-white/80 truncate">
+                          Verified Google Reviews · Thrissur
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setHeroReviewsPaused((prev) => !prev)}
+                      aria-label={heroReviewsPaused ? 'Resume reviews scroll' : 'Pause reviews scroll'}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-2.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-white/20 shrink-0"
+                    >
+                      {heroReviewsPaused ? (
+                        <>
+                          <Play className="h-3.5 w-3.5" />
+                          Resume
+                        </>
+                      ) : (
+                        <>
+                          <Pause className="h-3.5 w-3.5" />
+                          Pause
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Automatically Upward-Scrolling Reviews Window */}
+                  <div className="marquee-vertical-wrapper relative my-3 h-[320px] overflow-hidden">
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 top-0 z-10 h-7 bg-gradient-to-b from-[#1C402B] to-transparent"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-9 bg-gradient-to-t from-[#1C402B] to-transparent"
+                    />
+
+                    <div
+                      className={`animate-scroll-up gap-3 pb-3 ${
+                        heroReviewsPaused ? 'animate-scroll-up-paused' : ''
+                      }`}
+                    >
+                      {[...GOOGLE_REVIEWS, ...GOOGLE_REVIEWS].map((review, index) => (
+                        <article
+                          key={`${review.id}-hero-${index}`}
+                          className="rounded-lg border border-white/15 bg-[#163423] p-4"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <div
+                              className="flex items-center gap-0.5"
+                              aria-label={`${review.rating} out of 5 stars`}
+                            >
+                              {Array.from({ length: review.rating }).map((_, starIdx) => (
+                                <Star
+                                  key={starIdx}
+                                  className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]"
+                                />
+                              ))}
+                            </div>
+                            <span className="text-[11px] text-white/70">{review.timeAgo}</span>
+                          </div>
+                          <p className="mt-2 text-xs leading-relaxed text-white/95 sm:text-sm">
+                            &ldquo;{review.text}&rdquo;
+                          </p>
+                          <p className="mt-2.5 text-xs font-medium text-[#D9EAE0]">
+                            {review.authorLabel}
+                          </p>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Footer Actions */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/15 pt-3.5 text-xs">
+                    <a
+                      href="#reviews"
+                      className="font-medium text-white/90 hover:text-white underline underline-offset-4"
+                    >
+                      Read all {GOOGLE_REVIEWS.length} reviews
+                    </a>
+                    <a
+                      href={CLINIC_INFO.googleBusinessUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 font-semibold text-[#1C402B] transition-colors hover:bg-[#F2F4F0] whitespace-nowrap shrink-0"
+                    >
+                      Verify on Google
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* 4-Column Quick Overview Strip below Hero Split */}
-          <div className="mt-10 grid grid-cols-2 divide-y divide-[#E2E6DF] rounded-xl border border-[#E2E6DF] bg-[#F2F4F0]/70 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
-            <div className="px-5 py-4">
-              <div className="font-display text-xl font-semibold tabular-nums text-[#1A241E]">
-                4.9 / 5
+            {/* 4-Column Quick Overview Strip below Hero Split */}
+            <div className="mt-10 grid grid-cols-2 divide-y divide-[#E2E6DF] rounded-xl border border-[#E2E6DF] bg-[#F2F4F0]/90 backdrop-blur-[2px] sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+              <div className="px-5 py-4">
+                <div className="font-display text-xl font-semibold tabular-nums text-[#1A241E]">
+                  4.9 / 5
+                </div>
+                <div className="mt-0.5 text-xs text-[#556158]">
+                  Google Reviews rating
+                </div>
               </div>
-              <div className="mt-0.5 text-xs text-[#556158]">
-                Google Reviews rating
+              <div className="px-5 py-4">
+                <div className="font-display text-xl font-semibold tabular-nums text-[#1A241E]">
+                  {WELLNESS_PACKAGES.length} Packages
+                </div>
+                <div className="mt-0.5 text-xs text-[#556158]">
+                  One-day, rejuvenation & care
+                </div>
               </div>
-            </div>
-            <div className="px-5 py-4">
-              <div className="font-display text-xl font-semibold tabular-nums text-[#1A241E]">
-                {WELLNESS_PACKAGES.length} Packages
+              <div className="px-5 py-4">
+                <div className="font-display text-xl font-semibold text-[#1A241E]">
+                  {CLINIC_INFO.doctorName}
+                </div>
+                <div className="mt-0.5 text-xs text-[#556158]">
+                  Doctor-guided consultation
+                </div>
               </div>
-              <div className="mt-0.5 text-xs text-[#556158]">
-                One-day, rejuvenation & care
-              </div>
-            </div>
-            <div className="px-5 py-4">
-              <div className="font-display text-xl font-semibold text-[#1A241E]">
-                {CLINIC_INFO.doctorName}
-              </div>
-              <div className="mt-0.5 text-xs text-[#556158]">
-                Doctor-guided consultation
-              </div>
-            </div>
-            <div className="px-5 py-4">
-              <div className="font-display text-xl font-semibold text-[#1A241E]">
-                Clinic & Home
-              </div>
-              <div className="mt-0.5 text-xs text-[#556158]">
-                Pullat Ln, Thiruvambady
+              <div className="px-5 py-4">
+                <div className="font-display text-xl font-semibold text-[#1A241E]">
+                  Clinic & Home
+                </div>
+                <div className="mt-0.5 text-xs text-[#556158]">
+                  Pullat Ln, Thiruvambady
+                </div>
               </div>
             </div>
           </div>
@@ -476,7 +677,7 @@ export default function App() {
             </div>
 
             {/* Package Cards Grid */}
-            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
+            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredPackages.map((pkg) => {
                 const showingSecondary =
                   Boolean(pkg.secondaryPoster) && Boolean(secondaryPosterToggle[pkg.id]);
@@ -502,6 +703,11 @@ export default function App() {
                               ? `${pkg.malayalamName} · ${pkg.setting}`
                               : pkg.setting,
                             image: displayedPoster,
+                            secondaryImage: pkg.secondaryPoster,
+                            description: pkg.fullDescription,
+                            malayalamNote: pkg.malayalamNote,
+                            includedItems: pkg.includedSteps,
+                            idealFor: pkg.idealFor,
                             packageIdForBooking: `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
                           })
                         }
@@ -512,7 +718,7 @@ export default function App() {
                           src={displayedPoster}
                           alt={`${pkg.name} clinic poster`}
                           referrerPolicy="no-referrer"
-                          className="h-72 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02] sm:h-80"
+                          className="h-60 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02] sm:h-64"
                         />
                         <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 rounded-md bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
                           <ZoomIn className="h-3.5 w-3.5" />
@@ -559,7 +765,7 @@ export default function App() {
                     </div>
 
                     {/* Card Details */}
-                    <div className="flex flex-1 flex-col justify-between p-6">
+                    <div className="flex flex-1 flex-col justify-between p-5">
                       <div>
                         <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#556158]">
                           <span>{pkg.categoryLabel}</span>
@@ -579,18 +785,6 @@ export default function App() {
                         <p className="mt-2.5 text-sm leading-relaxed text-[#3F4B43]">
                           {pkg.summary}
                         </p>
-
-                        <ul className="mt-4 space-y-1.5 border-t border-[#E2E6DF] pt-4 text-sm text-[#2A352E]">
-                          {pkg.highlights.map((item) => (
-                            <li key={item} className="flex items-start gap-2">
-                              <span
-                                aria-hidden="true"
-                                className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B45F27]"
-                              />
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
                       </div>
 
                       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-4">
@@ -616,6 +810,11 @@ export default function App() {
                                 ? `${pkg.malayalamName} · ${pkg.setting}`
                                 : pkg.setting,
                               image: displayedPoster,
+                              secondaryImage: pkg.secondaryPoster,
+                              description: pkg.fullDescription,
+                              malayalamNote: pkg.malayalamNote,
+                              includedItems: pkg.includedSteps,
+                              idealFor: pkg.idealFor,
                               packageIdForBooking: `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
                             })
                           }
@@ -635,8 +834,7 @@ export default function App() {
         {/* Section 3: Individual Therapies ("Take What You Need") */}
         <section id="therapies" className="border-t border-[#E2E6DF] bg-[#FAFAF7] py-14 sm:py-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
-              {/* Left: Numbered Therapy List */}
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
               <div className="lg:col-span-7">
                 <p className="text-xs font-semibold tracking-wide text-[#B45F27] uppercase">
                   Individual Therapies
@@ -645,56 +843,18 @@ export default function App() {
                   Take what you need — single sessions or custom plans
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-[#3F4B43] sm:text-base">
-                  You don&apos;t have to commit to a multi-day package. Pick a single therapy after
-                  a brief consultation with {CLINIC_INFO.doctorName}.
+                  You don&apos;t have to commit to a multi-day package. Pick Panchakarma, Eye
+                  Treatments, Hair Treatments, Skin Treatments, or Foot care below after a brief
+                  consultation with {CLINIC_INFO.doctorName}.
                 </p>
-
-                <div className="mt-8 divide-y divide-[#E2E6DF] border-t border-b border-[#E2E6DF]">
-                  {INDIVIDUAL_THERAPIES.map((therapy, idx) => (
-                    <div
-                      key={therapy.id}
-                      className="flex flex-col justify-between gap-3 py-4 sm:flex-row sm:items-center"
-                    >
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-baseline gap-2.5">
-                          <span className="font-mono text-xs tabular-nums text-[#556158]">
-                            {String(idx + 1).padStart(2, '0')}.
-                          </span>
-                          <h3 className="font-display text-base font-semibold text-[#1A241E]">
-                            {therapy.name}
-                          </h3>
-                          <span className="text-xs font-medium text-[#1E4631]">
-                            {therapy.malayalamName}
-                          </span>
-                          <span aria-hidden="true" className="text-xs text-[#8A948D]">
-                            ·
-                          </span>
-                          <span className="text-xs text-[#556158]">{therapy.focus}</span>
-                        </div>
-                        <p className="mt-1 text-sm text-[#3F4B43]">{therapy.description}</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleSelectForBooking(
-                            `${therapy.name} (${therapy.malayalamName}) — Single Therapy`
-                          )
-                        }
-                        className="self-start rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap shrink-0 sm:self-center"
-                      >
-                        Book Session
-                      </button>
-                    </div>
-                  ))}
-                </div>
               </div>
 
-              {/* Right: Clinic Poster for Therapy Selection */}
-              <div className="space-y-6 lg:col-span-5">
+              {/* Compact Clinic Poster Card for Therapy Selection */}
+              <div className="lg:col-span-5">
                 {EDUCATIONAL_POSTERS.slice(0, 1).map((poster) => (
                   <div
                     key={poster.id}
-                    className="overflow-hidden rounded-xl border border-[#E2E6DF] bg-white p-4"
+                    className="flex flex-col gap-4 rounded-xl border border-[#E2E6DF] bg-white p-4 sm:flex-row sm:items-center"
                   >
                     <button
                       type="button"
@@ -703,33 +863,549 @@ export default function App() {
                           title: poster.title,
                           subtitle: poster.malayalamTitle,
                           image: poster.image,
+                          description: poster.caption,
+                          includedItems: poster.options,
+                          defaultSelectAll: false,
                           packageIdForBooking: 'Doctor Consultation / Custom Therapy',
+                          bookingVisitType: 'clinic',
                         })
                       }
-                      className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
+                      className="group relative flex h-32 w-full shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0] sm:w-32"
                     >
                       <img
                         src={poster.image}
                         alt={poster.title}
                         referrerPolicy="no-referrer"
-                        className="max-h-80 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                        className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.03]"
                       />
-                      <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 rounded-md bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
-                        <ZoomIn className="h-3.5 w-3.5" />
-                        Enlarge
+                      <span className="absolute right-1.5 bottom-1.5 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-[11px] font-medium text-white">
+                        <ZoomIn className="h-3 w-3" />
+                        Select
                       </span>
                     </button>
-                    <div className="mt-3">
+                    <div className="min-w-0">
                       <h3 className="font-display text-base font-semibold text-[#1A241E]">
                         {poster.title}
                       </h3>
                       <p className="mt-0.5 text-xs font-medium text-[#1E4631]">
                         {poster.malayalamTitle}
                       </p>
-                      <p className="mt-1.5 text-sm text-[#556158]">{poster.caption}</p>
+                      <p className="mt-1.5 text-xs leading-relaxed text-[#556158]">
+                        {poster.caption}
+                      </p>
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* 3-Column Main Heads: Panchakarma | Eye Treatments | Hair Treatments */}
+            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
+              {/* Column 1: Panchakarma */}
+              <div className="rounded-xl border border-[#D4DAD0] bg-white">
+                {panchakarmaTherapy && (
+                  <div className="p-5">
+                    <button
+                      type="button"
+                      onClick={() => setPanchakarmaOpen((prev) => !prev)}
+                      aria-expanded={panchakarmaOpen}
+                      aria-controls="panchakarma-sub-therapies"
+                      className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                    >
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        <h3 className="font-display text-xl font-semibold text-[#1A241E] group-hover:text-[#1E4631] transition-colors">
+                          {panchakarmaTherapy.name}
+                        </h3>
+                        <span className="text-sm font-medium text-[#1E4631]">
+                          {panchakarmaTherapy.malayalamName}
+                        </span>
+                      </div>
+                      <p className="mt-0.5 text-xs font-medium text-[#556158]">
+                        {panchakarmaTherapy.focus}
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-[#3F4B43]">
+                        {panchakarmaTherapy.description}
+                      </p>
+                    </button>
+
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-3.5">
+                      <button
+                        type="button"
+                        onClick={() => setPanchakarmaOpen((prev) => !prev)}
+                        aria-expanded={panchakarmaOpen}
+                        aria-controls="panchakarma-sub-therapies"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                      >
+                        <span>
+                          {panchakarmaOpen
+                            ? `Hide ${panchakarmaSubTherapies.length} therapies`
+                            : `View ${panchakarmaSubTherapies.length} therapies`}
+                        </span>
+                        <ChevronDown
+                          className={`h-4 w-4 transition-transform duration-200 ${
+                            panchakarmaOpen ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSelectForBooking(
+                            `${panchakarmaTherapy.name} (${panchakarmaTherapy.malayalamName}) — Single Therapy`
+                          )
+                        }
+                        className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                      >
+                        Book Session
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {panchakarmaOpen && (
+                  <div
+                    id="panchakarma-sub-therapies"
+                    className="border-t border-[#E2E6DF] bg-[#FAFAF7]/70 px-5 py-2"
+                  >
+                    <div className="divide-y divide-[#E2E6DF] border-l border-[#D4DAD0] pl-4">
+                      {panchakarmaSubTherapies.map((therapy, idx) => (
+                        <div key={therapy.id} className="py-3.5">
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                            <span className="font-mono text-xs tabular-nums text-[#556158]">
+                              {String(idx + 1).padStart(2, '0')}.
+                            </span>
+                            <h4 className="font-display text-base font-semibold text-[#1A241E]">
+                              {therapy.name}
+                            </h4>
+                            <span className="text-xs font-medium text-[#1E4631]">
+                              {therapy.malayalamName}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 text-xs text-[#556158]">{therapy.focus}</p>
+                          <p className="mt-1.5 text-sm leading-relaxed text-[#3F4B43]">
+                            {therapy.description}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleSelectForBooking(
+                                `${therapy.name} (${therapy.malayalamName}) — Single Therapy`
+                              )
+                            }
+                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                          >
+                            Book Session
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Column 2: Eye Treatments */}
+              <div className="rounded-xl border border-[#D4DAD0] bg-white">
+                <div className="p-5">
+                  <button
+                    type="button"
+                    onClick={() => setEyeTreatmentsOpen((prev) => !prev)}
+                    aria-expanded={eyeTreatmentsOpen}
+                    aria-controls="eye-treatments-sub-list"
+                    className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <h3 className="font-display text-xl font-semibold text-[#1A241E] group-hover:text-[#1E4631] transition-colors">
+                        {EYE_TREATMENT_HEAD.name}
+                      </h3>
+                      <span className="text-sm font-medium text-[#1E4631]">
+                        {EYE_TREATMENT_HEAD.malayalamName}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs font-medium text-[#556158]">
+                      {EYE_TREATMENT_HEAD.focus}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#3F4B43]">
+                      {EYE_TREATMENT_HEAD.description}
+                    </p>
+                  </button>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-3.5">
+                    <button
+                      type="button"
+                      onClick={() => setEyeTreatmentsOpen((prev) => !prev)}
+                      aria-expanded={eyeTreatmentsOpen}
+                      aria-controls="eye-treatments-sub-list"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                    >
+                      <span>
+                        {eyeTreatmentsOpen
+                          ? `Hide ${EYE_TREATMENTS.length} eye treatments`
+                          : `View ${EYE_TREATMENTS.length} eye treatments`}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          eyeTreatmentsOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSelectForBooking(
+                          `${EYE_TREATMENT_HEAD.name} (${EYE_TREATMENT_HEAD.malayalamName}) — Eye Care`
+                        )
+                      }
+                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                    >
+                      Book Session
+                    </button>
+                  </div>
+                </div>
+
+                {eyeTreatmentsOpen && (
+                  <div
+                    id="eye-treatments-sub-list"
+                    className="border-t border-[#E2E6DF] bg-[#FAFAF7]/70 px-5 py-2"
+                  >
+                    <div className="divide-y divide-[#E2E6DF] border-l border-[#D4DAD0] pl-4">
+                      {EYE_TREATMENTS.map((treatment, idx) => (
+                        <div key={treatment.id} className="py-3.5">
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                            <span className="font-mono text-xs tabular-nums text-[#556158]">
+                              {String(idx + 1).padStart(2, '0')}.
+                            </span>
+                            <h4 className="font-display text-base font-semibold text-[#1A241E]">
+                              {treatment.name}
+                            </h4>
+                            <span className="text-xs font-medium text-[#1E4631]">
+                              {treatment.malayalamName}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 text-xs text-[#556158]">{treatment.focus}</p>
+                          <p className="mt-1.5 text-sm leading-relaxed text-[#3F4B43]">
+                            {treatment.description}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleSelectForBooking(
+                                `${treatment.name} (${treatment.malayalamName}) — Eye Treatment`
+                              )
+                            }
+                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                          >
+                            Book Session
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Column 3: Hair Treatments */}
+              <div className="rounded-xl border border-[#D4DAD0] bg-white">
+                <div className="p-5">
+                  <button
+                    type="button"
+                    onClick={() => setHairTreatmentsOpen((prev) => !prev)}
+                    aria-expanded={hairTreatmentsOpen}
+                    aria-controls="hair-treatments-sub-list"
+                    className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <h3 className="font-display text-xl font-semibold text-[#1A241E] group-hover:text-[#1E4631] transition-colors">
+                        {HAIR_TREATMENT_HEAD.name}
+                      </h3>
+                      <span className="text-sm font-medium text-[#1E4631]">
+                        {HAIR_TREATMENT_HEAD.malayalamName}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs font-medium text-[#556158]">
+                      {HAIR_TREATMENT_HEAD.focus}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#3F4B43]">
+                      {HAIR_TREATMENT_HEAD.description}
+                    </p>
+                  </button>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-3.5">
+                    <button
+                      type="button"
+                      onClick={() => setHairTreatmentsOpen((prev) => !prev)}
+                      aria-expanded={hairTreatmentsOpen}
+                      aria-controls="hair-treatments-sub-list"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                    >
+                      <span>
+                        {hairTreatmentsOpen
+                          ? `Hide ${HAIR_TREATMENTS.length} hair treatments`
+                          : `View ${HAIR_TREATMENTS.length} hair treatments`}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          hairTreatmentsOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSelectForBooking(
+                          `${HAIR_TREATMENT_HEAD.name} (${HAIR_TREATMENT_HEAD.malayalamName}) — Hair Care`
+                        )
+                      }
+                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                    >
+                      Book Session
+                    </button>
+                  </div>
+                </div>
+
+                {hairTreatmentsOpen && (
+                  <div
+                    id="hair-treatments-sub-list"
+                    className="border-t border-[#E2E6DF] bg-[#FAFAF7]/70 px-5 py-2"
+                  >
+                    <div className="divide-y divide-[#E2E6DF] border-l border-[#D4DAD0] pl-4">
+                      {HAIR_TREATMENTS.map((treatment, idx) => (
+                        <div key={treatment.id} className="py-3.5">
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                            <span className="font-mono text-xs tabular-nums text-[#556158]">
+                              {String(idx + 1).padStart(2, '0')}.
+                            </span>
+                            <h4 className="font-display text-base font-semibold text-[#1A241E]">
+                              {treatment.name}
+                            </h4>
+                            <span className="text-xs font-medium text-[#1E4631]">
+                              {treatment.malayalamName}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 text-xs text-[#556158]">{treatment.focus}</p>
+                          <p className="mt-1.5 text-sm leading-relaxed text-[#3F4B43]">
+                            {treatment.description}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleSelectForBooking(
+                                `${treatment.name} (${treatment.malayalamName}) — Hair Treatment`
+                              )
+                            }
+                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                          >
+                            Book Session
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Row 2, Column 1 (Below Panchakarma): Skin Treatments */}
+              <div className="rounded-xl border border-[#D4DAD0] bg-white">
+                <div className="p-5">
+                  <button
+                    type="button"
+                    onClick={() => setSkinTreatmentsOpen((prev) => !prev)}
+                    aria-expanded={skinTreatmentsOpen}
+                    aria-controls="skin-treatments-sub-list"
+                    className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <h3 className="font-display text-xl font-semibold text-[#1A241E] group-hover:text-[#1E4631] transition-colors">
+                        {SKIN_TREATMENT_HEAD.name}
+                      </h3>
+                      <span className="text-sm font-medium text-[#1E4631]">
+                        {SKIN_TREATMENT_HEAD.malayalamName}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs font-medium text-[#556158]">
+                      {SKIN_TREATMENT_HEAD.focus}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#3F4B43]">
+                      {SKIN_TREATMENT_HEAD.description}
+                    </p>
+                  </button>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-3.5">
+                    <button
+                      type="button"
+                      onClick={() => setSkinTreatmentsOpen((prev) => !prev)}
+                      aria-expanded={skinTreatmentsOpen}
+                      aria-controls="skin-treatments-sub-list"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                    >
+                      <span>
+                        {skinTreatmentsOpen
+                          ? `Hide ${SKIN_TREATMENTS.length} skin treatments`
+                          : `View ${SKIN_TREATMENTS.length} skin treatments`}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          skinTreatmentsOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSelectForBooking(
+                          `${SKIN_TREATMENT_HEAD.name} (${SKIN_TREATMENT_HEAD.malayalamName}) — Skin Care`
+                        )
+                      }
+                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                    >
+                      Book Session
+                    </button>
+                  </div>
+                </div>
+
+                {skinTreatmentsOpen && (
+                  <div
+                    id="skin-treatments-sub-list"
+                    className="border-t border-[#E2E6DF] bg-[#FAFAF7]/70 px-5 py-2"
+                  >
+                    <div className="divide-y divide-[#E2E6DF] border-l border-[#D4DAD0] pl-4">
+                      {SKIN_TREATMENTS.map((treatment, idx) => (
+                        <div key={treatment.id} className="py-3.5">
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                            <span className="font-mono text-xs tabular-nums text-[#556158]">
+                              {String(idx + 1).padStart(2, '0')}.
+                            </span>
+                            <h4 className="font-display text-base font-semibold text-[#1A241E]">
+                              {treatment.name}
+                            </h4>
+                            <span className="text-xs font-medium text-[#1E4631]">
+                              {treatment.malayalamName}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 text-xs text-[#556158]">{treatment.focus}</p>
+                          <p className="mt-1.5 text-sm leading-relaxed text-[#3F4B43]">
+                            {treatment.description}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleSelectForBooking(
+                                `${treatment.name} (${treatment.malayalamName}) — Skin Treatment`
+                              )
+                            }
+                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                          >
+                            Book Session
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Row 2, Column 2 (After Skin Treatments): Foot */}
+              <div className="rounded-xl border border-[#D4DAD0] bg-white">
+                <div className="p-5">
+                  <button
+                    type="button"
+                    onClick={() => setFootTreatmentsOpen((prev) => !prev)}
+                    aria-expanded={footTreatmentsOpen}
+                    aria-controls="foot-treatments-sub-list"
+                    className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <h3 className="font-display text-xl font-semibold text-[#1A241E] group-hover:text-[#1E4631] transition-colors">
+                        {FOOT_TREATMENT_HEAD.name}
+                      </h3>
+                      <span className="text-sm font-medium text-[#1E4631]">
+                        {FOOT_TREATMENT_HEAD.malayalamName}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs font-medium text-[#556158]">
+                      {FOOT_TREATMENT_HEAD.focus}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#3F4B43]">
+                      {FOOT_TREATMENT_HEAD.description}
+                    </p>
+                  </button>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-3.5">
+                    <button
+                      type="button"
+                      onClick={() => setFootTreatmentsOpen((prev) => !prev)}
+                      aria-expanded={footTreatmentsOpen}
+                      aria-controls="foot-treatments-sub-list"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                    >
+                      <span>
+                        {footTreatmentsOpen
+                          ? `Hide ${FOOT_TREATMENTS.length} foot treatments`
+                          : `View ${FOOT_TREATMENTS.length} foot treatments`}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          footTreatmentsOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSelectForBooking(
+                          `${FOOT_TREATMENT_HEAD.name} (${FOOT_TREATMENT_HEAD.malayalamName}) — Foot & Nail Care`
+                        )
+                      }
+                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                    >
+                      Book Session
+                    </button>
+                  </div>
+                </div>
+
+                {footTreatmentsOpen && (
+                  <div
+                    id="foot-treatments-sub-list"
+                    className="border-t border-[#E2E6DF] bg-[#FAFAF7]/70 px-5 py-2"
+                  >
+                    <div className="divide-y divide-[#E2E6DF] border-l border-[#D4DAD0] pl-4">
+                      {FOOT_TREATMENTS.map((treatment, idx) => (
+                        <div key={treatment.id} className="py-3.5">
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                            <span className="font-mono text-xs tabular-nums text-[#556158]">
+                              {String(idx + 1).padStart(2, '0')}.
+                            </span>
+                            <h4 className="font-display text-base font-semibold text-[#1A241E]">
+                              {treatment.name}
+                            </h4>
+                            <span className="text-xs font-medium text-[#1E4631]">
+                              {treatment.malayalamName}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 text-xs text-[#556158]">{treatment.focus}</p>
+                          <p className="mt-1.5 text-sm leading-relaxed text-[#3F4B43]">
+                            {treatment.description}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleSelectForBooking(
+                                `${treatment.name} (${treatment.malayalamName}) — Foot Treatment`
+                              )
+                            }
+                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                          >
+                            Book Session
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -809,16 +1485,7 @@ export default function App() {
                   <div>
                     <button
                       type="button"
-                      onClick={() =>
-                        setModalPoster({
-                          title: 'Amritam Geriatric Rejuvenation Home Service',
-                          subtitle:
-                            'പ്രായത്തിന്റെ അവശതകൾക്ക് ആയുർവേദത്തിന്റെ സാന്ത്വനം; സമ്പൂർണ്ണ പരിചരണം ഇനി നിങ്ങളുടെ വീട്ടിൽ',
-                          image: '/assets/aistudio/final_-2_c07cdc72.jpg',
-                          packageIdForBooking:
-                            'Amritam Geriatric Rejuvenation (അമൃതം ജെറിയാട്രിക് റീജുവനേഷൻ ഹോം സർവീസ്)',
-                        })
-                      }
+                      onClick={() => openPackageById('amritam-geriatric')}
                       className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
                     >
                       <img
@@ -857,16 +1524,7 @@ export default function App() {
                   <div>
                     <button
                       type="button"
-                      onClick={() =>
-                        setModalPoster({
-                          title: 'Ayurvedic Prasavaraksha (Post-Delivery Care)',
-                          subtitle: 'അമ്മയുടെയും കുഞ്ഞിന്റെയും ആരോഗ്യ സംരക്ഷണം ഇനി നിങ്ങളുടെ വീട്ടിൽ',
-                          image:
-                            '/assets/aistudio/Untitled_-_08_June_2026_at_14.23.46_84304245.png',
-                          packageIdForBooking:
-                            'Ayurvedic Prasavaraksha (ആയുർവേദ പ്രസവരക്ഷ)',
-                        })
-                      }
+                      onClick={() => openPackageById('prasavaraksha')}
                       className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
                     >
                       <img
@@ -906,12 +1564,10 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() =>
-                        setModalPoster({
-                          title: 'SriSri Ayurveda Home Service',
-                          subtitle: 'Geriatric, Joint, Back Pain & Post-Delivery Home Visits',
-                          image: '/assets/aistudio/home_service_new_9f602148.png',
-                          packageIdForBooking: 'SriSri Home Service Care (ശ്രീ ശ്രീ ഹോം സർവീസ്)',
-                        })
+                        openPackageById(
+                          'home-service',
+                          '/assets/aistudio/home_service_new_9f602148.png'
+                        )
                       }
                       className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
                     >
@@ -1072,6 +1728,28 @@ export default function App() {
                       </a>
                     </div>
                   </div>
+
+                  <div className="flex flex-wrap items-center gap-3 border-t border-[#E2E6DF] pt-4">
+                    <span className="text-xs font-medium text-[#556158]">Follow us:</span>
+                    <a
+                      href={CLINIC_INFO.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631]"
+                    >
+                      <InstagramIcon className="h-3.5 w-3.5 text-[#1E4631]" />
+                      Instagram
+                    </a>
+                    <a
+                      href={CLINIC_INFO.facebookUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631]"
+                    >
+                      <FacebookIcon className="h-3.5 w-3.5 text-[#1E4631]" />
+                      Facebook
+                    </a>
+                  </div>
                 </div>
 
                 {/* Attached Map Screenshot + Google Business Link */}
@@ -1086,16 +1764,16 @@ export default function App() {
                       src={CLINIC_INFO.locationMapImage}
                       alt="Directions to SriSri Ayurveda Wellness Centre on Pullat Lane near Thiruvambady Temple, Thrissur"
                       referrerPolicy="no-referrer"
-                      className="h-64 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
+                      className="h-72 w-full object-cover object-[center_44%] transition-transform duration-200 group-hover:scale-[1.01]"
                     />
                   </a>
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-3 px-1">
                     <div className="flex items-center gap-3">
                       <img
                         src={CLINIC_INFO.googleBadgeImage}
-                        alt="4.9 Google Reviews badge"
+                        alt="Google Reviews"
                         referrerPolicy="no-referrer"
-                        className="h-12 w-12 rounded-md object-cover border border-[#E2E6DF]"
+                        className="h-12 w-16 rounded-md border border-[#E2E6DF] bg-white px-1.5 py-0.5 object-contain"
                       />
                       <div>
                         <p className="text-sm font-semibold text-[#1A241E]">
@@ -1133,7 +1811,15 @@ export default function App() {
                 </h2>
                 <p className="mt-1.5 text-sm text-[#556158]">
                   Consultation with {CLINIC_INFO.doctorName} ({CLINIC_INFO.doctorMalayalam}).
-                  Fill in your details to send your booking directly via WhatsApp or call us.
+                  Fill in your details to send your booking directly via WhatsApp or{' '}
+                  <button
+                    type="button"
+                    onClick={() => setOnlineConsultOpen(true)}
+                    className="font-medium text-[#1E4631] underline underline-offset-4 hover:text-[#163625]"
+                  >
+                    fill the Online Consultation Form
+                  </button>
+                  .
                 </p>
 
                 {submittedRequest ? (
@@ -1180,6 +1866,16 @@ export default function App() {
                         <dt className="text-[#556158]">Preferred Date</dt>
                         <dd className="font-medium text-[#1A241E]">{submittedRequest.date}</dd>
                       </div>
+                      {submittedRequest.selectedItems.length > 0 && (
+                        <div className="border-t border-[#D6E4DA] pt-2">
+                          <dt className="text-[#556158]">Selected Items Needed</dt>
+                          <dd className="mt-1 space-y-1 text-xs font-medium text-[#1A241E]">
+                            {submittedRequest.selectedItems.map((item) => (
+                              <div key={item}>• {item}</div>
+                            ))}
+                          </dd>
+                        </div>
+                      )}
                     </dl>
 
                     <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -1267,7 +1963,10 @@ export default function App() {
                       <select
                         id="booking-package"
                         value={selectedService}
-                        onChange={(e) => setSelectedService(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedService(e.target.value);
+                          setSelectedPackageItems([]);
+                        }}
                         className="mt-1.5 w-full rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3.5 py-2.5 text-sm text-[#1A241E] focus:border-[#1E4631] focus:bg-white focus:outline-none"
                       >
                         <optgroup label="Wellness Packages">
@@ -1293,7 +1992,89 @@ export default function App() {
                             );
                           })}
                         </optgroup>
+                        <optgroup label="Eye Treatments (Netra Chikitsa)">
+                          <option
+                            value={`${EYE_TREATMENT_HEAD.name} (${EYE_TREATMENT_HEAD.malayalamName}) — Eye Care`}
+                          >
+                            {EYE_TREATMENT_HEAD.name} ({EYE_TREATMENT_HEAD.malayalamName}) — Eye Care
+                          </option>
+                          {EYE_TREATMENTS.map((et) => {
+                            const label = `${et.name} (${et.malayalamName}) — Eye Treatment`;
+                            return (
+                              <option key={et.id} value={label}>
+                                {label}
+                              </option>
+                            );
+                          })}
+                        </optgroup>
+                        <optgroup label="Hair Treatments (Kesa Chikitsa)">
+                          <option
+                            value={`${HAIR_TREATMENT_HEAD.name} (${HAIR_TREATMENT_HEAD.malayalamName}) — Hair Care`}
+                          >
+                            {HAIR_TREATMENT_HEAD.name} ({HAIR_TREATMENT_HEAD.malayalamName}) — Hair Care
+                          </option>
+                          {HAIR_TREATMENTS.map((ht) => {
+                            const label = `${ht.name} (${ht.malayalamName}) — Hair Treatment`;
+                            return (
+                              <option key={ht.id} value={label}>
+                                {label}
+                              </option>
+                            );
+                          })}
+                        </optgroup>
+                        <optgroup label="Skin Treatments (Twak Chikitsa)">
+                          <option
+                            value={`${SKIN_TREATMENT_HEAD.name} (${SKIN_TREATMENT_HEAD.malayalamName}) — Skin Care`}
+                          >
+                            {SKIN_TREATMENT_HEAD.name} ({SKIN_TREATMENT_HEAD.malayalamName}) — Skin Care
+                          </option>
+                          {SKIN_TREATMENTS.map((st) => {
+                            const label = `${st.name} (${st.malayalamName}) — Skin Treatment`;
+                            return (
+                              <option key={st.id} value={label}>
+                                {label}
+                              </option>
+                            );
+                          })}
+                        </optgroup>
+                        <optgroup label="Foot, Hand & Nail Care (Pada Chikitsa)">
+                          <option
+                            value={`${FOOT_TREATMENT_HEAD.name} (${FOOT_TREATMENT_HEAD.malayalamName}) — Foot & Nail Care`}
+                          >
+                            {FOOT_TREATMENT_HEAD.name} ({FOOT_TREATMENT_HEAD.malayalamName}) — Foot & Nail Care
+                          </option>
+                          {FOOT_TREATMENTS.map((ft) => {
+                            const label = `${ft.name} (${ft.malayalamName}) — Foot Treatment`;
+                            return (
+                              <option key={ft.id} value={label}>
+                                {label}
+                              </option>
+                            );
+                          })}
+                        </optgroup>
                       </select>
+
+                      {selectedPackageItems.length > 0 && (
+                        <div className="mt-2.5 rounded-lg border border-[#CFE0D4] bg-[#F2F7F4] p-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-semibold text-[#1E4631]">
+                              Selected Items Included ({selectedPackageItems.length})
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPackageItems([])}
+                              className="text-xs font-medium text-[#556158] hover:text-[#1A241E] hover:underline"
+                            >
+                              Clear selection
+                            </button>
+                          </div>
+                          <ul className="mt-1.5 space-y-1 text-xs text-[#2A352E]">
+                            {selectedPackageItems.map((item) => (
+                              <li key={item}>• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -1523,6 +2304,13 @@ export default function App() {
             <a href="#home-care" className="hover:text-[#1E4631]">
               Home Care
             </a>
+            <button
+              type="button"
+              onClick={() => setOnlineConsultOpen(true)}
+              className="hover:text-[#1E4631]"
+            >
+              Online Consultation
+            </button>
             <a
               href={CLINIC_INFO.googleBusinessUrl}
               target="_blank"
@@ -1531,6 +2319,28 @@ export default function App() {
             >
               Google Business Profile
             </a>
+            <div className="flex items-center gap-2.5">
+              <a
+                href={CLINIC_INFO.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="SriSri Ayurveda on Instagram"
+                title="Instagram"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E6DF] bg-[#FAFAF7] text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631]"
+              >
+                <InstagramIcon className="h-4 w-4" />
+              </a>
+              <a
+                href={CLINIC_INFO.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="SriSri Ayurveda on Facebook"
+                title="Facebook"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E6DF] bg-[#FAFAF7] text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631]"
+              >
+                <FacebookIcon className="h-4 w-4" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>
@@ -1542,11 +2352,28 @@ export default function App() {
         title={modalPoster?.title ?? ''}
         subtitle={modalPoster?.subtitle}
         image={modalPoster?.image ?? ''}
+        secondaryImage={modalPoster?.secondaryImage}
+        description={modalPoster?.description}
+        malayalamNote={modalPoster?.malayalamNote}
+        includedItems={modalPoster?.includedItems}
+        defaultSelectAll={modalPoster?.defaultSelectAll}
+        idealFor={modalPoster?.idealFor}
         onBook={
           modalPoster?.packageIdForBooking
-            ? () => handleSelectForBooking(modalPoster.packageIdForBooking!)
+            ? (chosenItems) =>
+                handleSelectForBooking(
+                  modalPoster.packageIdForBooking!,
+                  modalPoster.bookingVisitType ?? 'clinic',
+                  chosenItems
+                )
             : undefined
         }
+      />
+
+      {/* Online Consultation Form Modal */}
+      <ConsultationFormModal
+        isOpen={onlineConsultOpen}
+        onClose={() => setOnlineConsultOpen(false)}
       />
     </div>
   );
