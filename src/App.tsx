@@ -9,7 +9,6 @@ import {
   Menu,
   X,
   CheckCircle2,
-  MessageCircle,
   ArrowRight,
   Home,
   Star,
@@ -17,6 +16,11 @@ import {
   Play,
   FileText,
   ChevronDown,
+  Sunrise,
+  Apple,
+  Sun,
+  Coffee,
+  Moon,
 } from 'lucide-react';
 import {
   CLINIC_INFO,
@@ -31,6 +35,9 @@ import {
   SKIN_TREATMENTS,
   FOOT_TREATMENT_HEAD,
   FOOT_TREATMENTS,
+  DIET_CONSULTATION_HEAD,
+  DIET_CONSULTATION_FEATURES,
+  DIET_MEAL_SCHEDULE,
   EDUCATIONAL_POSTERS,
   GOOGLE_REVIEWS,
   type PackageCategory,
@@ -88,6 +95,20 @@ function FacebookIcon({ className = 'h-4 w-4' }: { className?: string }) {
   );
 }
 
+function WhatsAppIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M12.031 2C6.506 2 2.028 6.477 2.028 12.002c0 1.763.461 3.485 1.337 5.004L2 22l5.115-1.341a9.96 9.96 0 0 0 4.916 1.294h.004c5.524 0 10.002-4.477 10.002-10.002C22.037 6.477 17.556 2 12.031 2Zm0 18.234h-.003a8.24 8.24 0 0 1-4.197-1.15l-.301-.179-3.118.817.832-3.038-.196-.312a8.215 8.215 0 0 1-1.26-4.37c0-4.544 3.697-8.241 8.244-8.241 2.201 0 4.27.858 5.826 2.415a8.187 8.187 0 0 1 2.412 5.828c0 4.544-3.698 8.23-8.239 8.23Z" />
+      <path d="M16.55 14.075c-.248-.124-1.466-.723-1.693-.806-.227-.083-.392-.124-.558.124-.165.248-.64.806-.785.971-.145.165-.289.186-.537.062-.248-.124-1.046-.385-1.993-1.23-.737-.657-1.235-1.468-1.38-1.716-.145-.248-.015-.382.109-.506.111-.111.248-.289.372-.434.124-.145.165-.248.248-.413.083-.165.041-.31-.021-.434-.062-.124-.558-1.344-.764-1.84-.201-.484-.406-.418-.558-.426-.144-.007-.31-.009-.475-.009s-.434.062-.661.31c-.227.248-.868.848-.868 2.067s.888 2.398 1.012 2.563c.124.165 1.748 2.668 4.236 3.742.592.256 1.054.408 1.414.522.594.189 1.135.162 1.563.098.477-.071 1.466-.599 1.673-1.178.207-.579.207-1.075.145-1.178-.062-.103-.227-.165-.475-.289Z" />
+    </svg>
+  );
+}
+
 export default function App() {
   const [selectedFilter, setSelectedFilter] = useState<PackageCategory>('all');
   const [reviewsPaused, setReviewsPaused] = useState(false);
@@ -103,6 +124,7 @@ export default function App() {
   const [hairTreatmentsOpen, setHairTreatmentsOpen] = useState(false);
   const [skinTreatmentsOpen, setSkinTreatmentsOpen] = useState(false);
   const [footTreatmentsOpen, setFootTreatmentsOpen] = useState(false);
+  const [dietConsultationOpen, setDietConsultationOpen] = useState(false);
 
   // Booking form state
   const bookingSectionRef = useRef<HTMLDivElement>(null);
@@ -255,13 +277,12 @@ export default function App() {
             >
               Home Care
             </a>
-            <button
-              type="button"
-              onClick={() => setOnlineConsultOpen(true)}
+            <a
+              href="#book"
               className="hover:text-[#1E4631] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
             >
               Online Consultation
-            </button>
+            </a>
             <a
               href="#location"
               className="hover:text-[#1E4631] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
@@ -334,16 +355,13 @@ export default function App() {
               >
                 Home Service & Prasavaraksha
               </a>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setOnlineConsultOpen(true);
-                }}
+              <a
+                href="#book"
+                onClick={() => setMobileMenuOpen(false)}
                 className="py-1.5 text-left hover:text-[#1E4631]"
               >
                 Online Consultation
-              </button>
+              </a>
               <a
                 href="#posters"
                 onClick={() => setMobileMenuOpen(false)}
@@ -440,20 +458,30 @@ export default function App() {
                     Explore Wellness Packages
                     <ArrowRight className="h-4 w-4" />
                   </a>
-                  <button
-                    type="button"
-                    onClick={() => setOnlineConsultOpen(true)}
+                  <a
+                    href="#book"
                     className="inline-flex items-center gap-2 rounded-lg border border-[#1E4631] bg-white px-4 py-3 text-sm font-medium text-[#1E4631] transition-colors hover:bg-[#F2F7F4] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
                   >
                     <FileText className="h-4 w-4" />
                     Online Consultation
-                  </button>
+                  </a>
                   <a
                     href={CLINIC_INFO.telHref}
                     className="inline-flex items-center gap-2 rounded-lg border border-[#D4DAD0] bg-white px-4 py-3 text-sm font-medium text-[#1A241E] transition-colors hover:bg-[#F2F4F0] whitespace-nowrap shrink-0"
                   >
                     <Phone className="h-4 w-4 text-[#1E4631]" />
                     Call {CLINIC_INFO.phoneDisplay}
+                  </a>
+                  <a
+                    href={`${CLINIC_INFO.whatsappBase}?text=${encodeURIComponent(
+                      'Namaskaram SriSri Ayurveda Thrissur, I would like to enquire about an appointment or wellness package.'
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-[#96D9AE] bg-[#EFFAF3] px-4 py-3 text-sm font-medium text-[#116333] transition-colors hover:border-[#1E8E4B] hover:bg-[#E1F5E8] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E8E4B]"
+                  >
+                    <WhatsAppIcon className="h-[18px] w-[18px] text-[#22B55A]" />
+                    WhatsApp
                   </a>
                 </div>
 
@@ -934,7 +962,11 @@ export default function App() {
                         onClick={() => setPanchakarmaOpen((prev) => !prev)}
                         aria-expanded={panchakarmaOpen}
                         aria-controls="panchakarma-sub-therapies"
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                        className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                          panchakarmaOpen
+                            ? 'border-[#1E4631] bg-[#1E4631] text-white'
+                            : 'border-[#B5D0BE] bg-[#EBF4EE] text-[#1E4631] hover:bg-[#DCEBE1]'
+                        }`}
                       >
                         <span>
                           {panchakarmaOpen
@@ -955,7 +987,7 @@ export default function App() {
                             `${panchakarmaTherapy.name} (${panchakarmaTherapy.malayalamName}) — Single Therapy`
                           )
                         }
-                        className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                        className="rounded-lg bg-[#A6531E] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#8E4518] whitespace-nowrap shrink-0"
                       >
                         Book Session
                       </button>
@@ -993,7 +1025,7 @@ export default function App() {
                                 `${therapy.name} (${therapy.malayalamName}) — Single Therapy`
                               )
                             }
-                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                            className="mt-2.5 inline-flex rounded-lg border border-[#DFBFA8] bg-[#FDF6F0] px-3 py-1.5 text-xs font-semibold text-[#934617] transition-colors hover:border-[#A6531E] hover:bg-[#A6531E] hover:text-white whitespace-nowrap"
                           >
                             Book Session
                           </button>
@@ -1036,7 +1068,11 @@ export default function App() {
                       onClick={() => setEyeTreatmentsOpen((prev) => !prev)}
                       aria-expanded={eyeTreatmentsOpen}
                       aria-controls="eye-treatments-sub-list"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                        eyeTreatmentsOpen
+                          ? 'border-[#1E4631] bg-[#1E4631] text-white'
+                          : 'border-[#B5D0BE] bg-[#EBF4EE] text-[#1E4631] hover:bg-[#DCEBE1]'
+                      }`}
                     >
                       <span>
                         {eyeTreatmentsOpen
@@ -1057,7 +1093,7 @@ export default function App() {
                           `${EYE_TREATMENT_HEAD.name} (${EYE_TREATMENT_HEAD.malayalamName}) — Eye Care`
                         )
                       }
-                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                      className="rounded-lg bg-[#A6531E] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#8E4518] whitespace-nowrap shrink-0"
                     >
                       Book Session
                     </button>
@@ -1094,7 +1130,7 @@ export default function App() {
                                 `${treatment.name} (${treatment.malayalamName}) — Eye Treatment`
                               )
                             }
-                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                            className="mt-2.5 inline-flex rounded-lg border border-[#DFBFA8] bg-[#FDF6F0] px-3 py-1.5 text-xs font-semibold text-[#934617] transition-colors hover:border-[#A6531E] hover:bg-[#A6531E] hover:text-white whitespace-nowrap"
                           >
                             Book Session
                           </button>
@@ -1137,7 +1173,11 @@ export default function App() {
                       onClick={() => setHairTreatmentsOpen((prev) => !prev)}
                       aria-expanded={hairTreatmentsOpen}
                       aria-controls="hair-treatments-sub-list"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                        hairTreatmentsOpen
+                          ? 'border-[#1E4631] bg-[#1E4631] text-white'
+                          : 'border-[#B5D0BE] bg-[#EBF4EE] text-[#1E4631] hover:bg-[#DCEBE1]'
+                      }`}
                     >
                       <span>
                         {hairTreatmentsOpen
@@ -1158,7 +1198,7 @@ export default function App() {
                           `${HAIR_TREATMENT_HEAD.name} (${HAIR_TREATMENT_HEAD.malayalamName}) — Hair Care`
                         )
                       }
-                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                      className="rounded-lg bg-[#A6531E] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#8E4518] whitespace-nowrap shrink-0"
                     >
                       Book Session
                     </button>
@@ -1195,7 +1235,7 @@ export default function App() {
                                 `${treatment.name} (${treatment.malayalamName}) — Hair Treatment`
                               )
                             }
-                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                            className="mt-2.5 inline-flex rounded-lg border border-[#DFBFA8] bg-[#FDF6F0] px-3 py-1.5 text-xs font-semibold text-[#934617] transition-colors hover:border-[#A6531E] hover:bg-[#A6531E] hover:text-white whitespace-nowrap"
                           >
                             Book Session
                           </button>
@@ -1238,7 +1278,11 @@ export default function App() {
                       onClick={() => setSkinTreatmentsOpen((prev) => !prev)}
                       aria-expanded={skinTreatmentsOpen}
                       aria-controls="skin-treatments-sub-list"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                        skinTreatmentsOpen
+                          ? 'border-[#1E4631] bg-[#1E4631] text-white'
+                          : 'border-[#B5D0BE] bg-[#EBF4EE] text-[#1E4631] hover:bg-[#DCEBE1]'
+                      }`}
                     >
                       <span>
                         {skinTreatmentsOpen
@@ -1259,7 +1303,7 @@ export default function App() {
                           `${SKIN_TREATMENT_HEAD.name} (${SKIN_TREATMENT_HEAD.malayalamName}) — Skin Care`
                         )
                       }
-                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                      className="rounded-lg bg-[#A6531E] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#8E4518] whitespace-nowrap shrink-0"
                     >
                       Book Session
                     </button>
@@ -1296,7 +1340,7 @@ export default function App() {
                                 `${treatment.name} (${treatment.malayalamName}) — Skin Treatment`
                               )
                             }
-                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                            className="mt-2.5 inline-flex rounded-lg border border-[#DFBFA8] bg-[#FDF6F0] px-3 py-1.5 text-xs font-semibold text-[#934617] transition-colors hover:border-[#A6531E] hover:bg-[#A6531E] hover:text-white whitespace-nowrap"
                           >
                             Book Session
                           </button>
@@ -1339,7 +1383,11 @@ export default function App() {
                       onClick={() => setFootTreatmentsOpen((prev) => !prev)}
                       aria-expanded={footTreatmentsOpen}
                       aria-controls="foot-treatments-sub-list"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4"
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                        footTreatmentsOpen
+                          ? 'border-[#1E4631] bg-[#1E4631] text-white'
+                          : 'border-[#B5D0BE] bg-[#EBF4EE] text-[#1E4631] hover:bg-[#DCEBE1]'
+                      }`}
                     >
                       <span>
                         {footTreatmentsOpen
@@ -1360,7 +1408,7 @@ export default function App() {
                           `${FOOT_TREATMENT_HEAD.name} (${FOOT_TREATMENT_HEAD.malayalamName}) — Foot & Nail Care`
                         )
                       }
-                      className="rounded-lg bg-[#1E4631] px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                      className="rounded-lg bg-[#A6531E] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#8E4518] whitespace-nowrap shrink-0"
                     >
                       Book Session
                     </button>
@@ -1397,12 +1445,169 @@ export default function App() {
                                 `${treatment.name} (${treatment.malayalamName}) — Foot Treatment`
                               )
                             }
-                            className="mt-2.5 inline-flex rounded-lg border border-[#D4DAD0] bg-white px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap"
+                            className="mt-2.5 inline-flex rounded-lg border border-[#DFBFA8] bg-[#FDF6F0] px-3 py-1.5 text-xs font-semibold text-[#934617] transition-colors hover:border-[#A6531E] hover:bg-[#A6531E] hover:text-white whitespace-nowrap"
                           >
                             Book Session
                           </button>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Row 2, Column 3 (After Foot): Diet Consultation */}
+              <div className="rounded-xl border border-[#D4DAD0] bg-white">
+                <div className="p-5">
+                  <button
+                    type="button"
+                    onClick={() => setDietConsultationOpen((prev) => !prev)}
+                    aria-expanded={dietConsultationOpen}
+                    aria-controls="diet-consultation-sub-list"
+                    className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <h3 className="font-display text-xl font-semibold text-[#1A241E] group-hover:text-[#1E4631] transition-colors">
+                        {DIET_CONSULTATION_HEAD.name}
+                      </h3>
+                      <span className="text-sm font-medium text-[#1E4631]">
+                        {DIET_CONSULTATION_HEAD.malayalamName}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs font-medium text-[#B45F27]">
+                      {DIET_CONSULTATION_HEAD.focus}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#3F4B43]">
+                      {DIET_CONSULTATION_HEAD.description}
+                    </p>
+                  </button>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-3.5">
+                    <button
+                      type="button"
+                      onClick={() => setDietConsultationOpen((prev) => !prev)}
+                      aria-expanded={dietConsultationOpen}
+                      aria-controls="diet-consultation-sub-list"
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                        dietConsultationOpen
+                          ? 'border-[#1E4631] bg-[#1E4631] text-white'
+                          : 'border-[#B5D0BE] bg-[#EBF4EE] text-[#1E4631] hover:bg-[#DCEBE1]'
+                      }`}
+                    >
+                      <span>
+                        {dietConsultationOpen
+                          ? 'Hide 1-month diet plan'
+                          : 'View 1-month diet plan'}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          dietConsultationOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSelectForBooking(
+                          `${DIET_CONSULTATION_HEAD.name} — 1-Month Diet Chart (${DIET_CONSULTATION_HEAD.malayalamName})`,
+                          'clinic',
+                          [
+                            ...DIET_CONSULTATION_FEATURES,
+                            'Daily Schedule: Breakfast, Mid-Morning Snack, Lunch, Evening Snack, Dinner',
+                          ]
+                        )
+                      }
+                      className="rounded-lg bg-[#A6531E] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#8E4518] whitespace-nowrap shrink-0"
+                    >
+                      Book Session
+                    </button>
+                  </div>
+                </div>
+
+                {dietConsultationOpen && (
+                  <div
+                    id="diet-consultation-sub-list"
+                    className="border-t border-[#E2E6DF] bg-[#FAFAF7]/80 px-5 py-4 space-y-4"
+                  >
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-[#B45F27]">
+                        1-Month Diet Chart
+                      </p>
+                      <h4 className="mt-0.5 font-display text-base font-semibold text-[#1A241E]">
+                        Start your journey with {CLINIC_INFO.doctorName.replace(' Aswin', '')}
+                      </h4>
+                    </div>
+
+                    <ul className="space-y-2">
+                      {DIET_CONSULTATION_FEATURES.map((feature) => (
+                        <li
+                          key={feature}
+                          className="flex items-start gap-2 text-sm text-[#2A352E]"
+                        >
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#1E4631]" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="border-t border-[#E2E6DF] pt-3.5">
+                      <p className="text-xs font-semibold text-[#1A241E]">
+                        Meals included in the daily schedule:
+                      </p>
+                      <ul className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {DIET_MEAL_SCHEDULE.map((meal) => {
+                          const MealIcon =
+                            meal.id === 'breakfast'
+                              ? Sunrise
+                              : meal.id === 'mid-morning'
+                                ? Apple
+                                : meal.id === 'lunch'
+                                  ? Sun
+                                  : meal.id === 'evening'
+                                    ? Coffee
+                                    : Moon;
+                          return (
+                            <li
+                              key={meal.id}
+                              className="flex items-center gap-2 rounded-lg border border-[#E2E6DF] bg-white px-3 py-2 text-xs font-medium text-[#1A241E]"
+                            >
+                              <MealIcon className="h-4 w-4 shrink-0 text-[#B45F27]" />
+                              <span>{meal.label}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSelectForBooking(
+                            `${DIET_CONSULTATION_HEAD.name} — 1-Month Diet Chart (${DIET_CONSULTATION_HEAD.malayalamName})`,
+                            'clinic',
+                            [
+                              ...DIET_CONSULTATION_FEATURES,
+                              'Daily Schedule: Breakfast, Mid-Morning Snack, Lunch, Evening Snack, Dinner',
+                            ]
+                          )
+                        }
+                        className="rounded-lg bg-[#A6531E] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#8E4518] whitespace-nowrap"
+                      >
+                        Book Diet Chart
+                      </button>
+                      <a
+                        href={`${CLINIC_INFO.whatsappBase}?text=${encodeURIComponent(
+                          'Namaskaram Dr. Anagha, I would like to start the 1-Month Diet Chart (Diet Consultation).'
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-[#96D9AE] bg-[#EFFAF3] px-3 py-2 text-xs font-medium text-[#116333] transition-colors hover:border-[#1E8E4B] hover:bg-[#E1F5E8] whitespace-nowrap"
+                      >
+                        <WhatsAppIcon className="h-4 w-4 text-[#22B55A]" />
+                        Enquire on WhatsApp
+                      </a>
                     </div>
                   </div>
                 )}
@@ -1716,17 +1921,30 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 border-t border-[#E2E6DF] pt-4">
-                    <Phone className="h-5 w-5 shrink-0 text-[#1E4631]" />
-                    <div className="text-sm">
-                      <span className="font-medium text-[#1A241E]">Phone & WhatsApp: </span>
-                      <a
-                        href={CLINIC_INFO.telHref}
-                        className="font-semibold text-[#1E4631] hover:underline"
-                      >
-                        {CLINIC_INFO.phoneDisplay}
-                      </a>
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-4">
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 shrink-0 text-[#1E4631]" />
+                      <div className="text-sm">
+                        <span className="font-medium text-[#1A241E]">Phone & WhatsApp: </span>
+                        <a
+                          href={CLINIC_INFO.telHref}
+                          className="font-semibold text-[#1E4631] hover:underline"
+                        >
+                          {CLINIC_INFO.phoneDisplay}
+                        </a>
+                      </div>
                     </div>
+                    <a
+                      href={`${CLINIC_INFO.whatsappBase}?text=${encodeURIComponent(
+                        'Namaskaram SriSri Ayurveda Thrissur, I would like to enquire about an appointment.'
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#96D9AE] bg-[#EFFAF3] px-3 py-1.5 text-xs font-medium text-[#116333] transition-colors hover:border-[#1E8E4B] hover:bg-[#E1F5E8] whitespace-nowrap shrink-0"
+                    >
+                      <WhatsAppIcon className="h-4 w-4 text-[#22B55A]" />
+                      Message on WhatsApp
+                    </a>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 border-t border-[#E2E6DF] pt-4">
@@ -1885,7 +2103,7 @@ export default function App() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-lg bg-[#1E4631] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
                       >
-                        <MessageCircle className="h-4 w-4" />
+                        <WhatsAppIcon className="h-4 w-4" />
                         Confirm via WhatsApp
                       </a>
                       <a
@@ -2052,6 +2270,13 @@ export default function App() {
                             );
                           })}
                         </optgroup>
+                        <optgroup label="Diet Consultation (1-Month Diet Chart)">
+                          <option
+                            value={`${DIET_CONSULTATION_HEAD.name} — 1-Month Diet Chart (${DIET_CONSULTATION_HEAD.malayalamName})`}
+                          >
+                            {DIET_CONSULTATION_HEAD.name} — 1-Month Diet Chart ({DIET_CONSULTATION_HEAD.malayalamName})
+                          </option>
+                        </optgroup>
                       </select>
 
                       {selectedPackageItems.length > 0 && (
@@ -2150,12 +2375,25 @@ export default function App() {
                         Request Appointment
                         <ArrowRight className="h-4 w-4" />
                       </button>
-                      <a
-                        href={CLINIC_INFO.telHref}
-                        className="text-xs font-medium text-[#556158] hover:text-[#1E4631]"
-                      >
-                        Or call directly: {CLINIC_INFO.phoneDisplay}
-                      </a>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <a
+                          href={CLINIC_INFO.telHref}
+                          className="text-xs font-medium text-[#556158] hover:text-[#1E4631]"
+                        >
+                          Call: {CLINIC_INFO.phoneDisplay}
+                        </a>
+                        <a
+                          href={`${CLINIC_INFO.whatsappBase}?text=${encodeURIComponent(
+                            'Namaskaram SriSri Ayurveda Thrissur, I would like to book an appointment.'
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-[#96D9AE] bg-[#EFFAF3] px-2.5 py-1.5 text-xs font-medium text-[#116333] transition-colors hover:border-[#1E8E4B] hover:bg-[#E1F5E8] whitespace-nowrap shrink-0"
+                        >
+                          <WhatsAppIcon className="h-4 w-4 text-[#22B55A]" />
+                          WhatsApp
+                        </a>
+                      </div>
                     </div>
                   </form>
                 )}
@@ -2304,13 +2542,9 @@ export default function App() {
             <a href="#home-care" className="hover:text-[#1E4631]">
               Home Care
             </a>
-            <button
-              type="button"
-              onClick={() => setOnlineConsultOpen(true)}
-              className="hover:text-[#1E4631]"
-            >
+            <a href="#book" className="hover:text-[#1E4631]">
               Online Consultation
-            </button>
+            </a>
             <a
               href={CLINIC_INFO.googleBusinessUrl}
               target="_blank"

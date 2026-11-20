@@ -890,6 +890,39 @@ export const FOOT_TREATMENTS: TherapyItem[] = [
   },
 ];
 
+export const DIET_CONSULTATION_HEAD: TherapyItem = {
+  id: 'diet-consultation',
+  name: 'Diet Consultation',
+  malayalamName: 'ആഹാരക്രമ കൺസൾട്ടേഷൻ',
+  focus: '1-Month Diet Chart · Start your journey with Dr. Anagha',
+  description:
+    'Personalized 1-month Ayurvedic diet chart with complete body assessment, weekly menu rotation, condition-based food modifications, and daily follow-up.',
+};
+
+export const DIET_CONSULTATION_FEATURES: string[] = [
+  'Complete Body Assessment',
+  'Weekly Menu Rotation',
+  'Diet Modifications Based on Health Conditions',
+  'Food List',
+  'Portion Size Guidance',
+  'Daily Follow-up',
+  'Lifestyle Modification Guidelines',
+  'Detox Support',
+];
+
+export interface DietMealSlot {
+  id: 'breakfast' | 'mid-morning' | 'lunch' | 'evening' | 'dinner';
+  label: string;
+}
+
+export const DIET_MEAL_SCHEDULE: DietMealSlot[] = [
+  { id: 'breakfast', label: 'Breakfast' },
+  { id: 'mid-morning', label: 'Mid-Morning Snack' },
+  { id: 'lunch', label: 'Lunch' },
+  { id: 'evening', label: 'Evening Snack' },
+  { id: 'dinner', label: 'Dinner' },
+];
+
 export const EDUCATIONAL_POSTERS: ClinicPosterItem[] = [
   {
     id: 'take-what-you-need',
@@ -908,6 +941,13 @@ export const EDUCATIONAL_POSTERS: ClinicPosterItem[] = [
       'Nethradhara (നേത്രധാര)',
       'Dhumapanam (ധൂമപാനം)',
     ],
+  },
+  {
+    id: 'ayurveda-healing',
+    title: 'Healing & Rejuvenation',
+    malayalamTitle: 'ആയുർവേദവും സമ്പൂർണ്ണ ആരോഗ്യവും',
+    caption: 'Why classical Ayurveda remains one of the most gentle and thorough ways to restore everyday health.',
+    image: '/assets/aistudio/Untitled_-_11_August_2026_at_13.02.39-1_6e515b79.png',
   },
   {
     id: 'our-promise',
@@ -929,13 +969,6 @@ export const EDUCATIONAL_POSTERS: ClinicPosterItem[] = [
     malayalamTitle: 'താളാത്മകമായ മസാജിന്റെ വഴി',
     caption: 'From daily stress and tension to slowing down, soothing touch, deep rest, calm breathing, and mindful self-care.',
     image: '/assets/aistudio/Untitled_-_11_August_2026_at_13.02.39-3_4fe08956.png',
-  },
-  {
-    id: 'ayurveda-healing',
-    title: 'Healing & Rejuvenation',
-    malayalamTitle: 'ആയുർവേദവും സമ്പൂർണ്ണ ആരോഗ്യവും',
-    caption: 'Why classical Ayurveda remains one of the most gentle and thorough ways to restore everyday health.',
-    image: '/assets/aistudio/Untitled_-_11_August_2026_at_13.02.39-1_6e515b79.png',
   },
 ];
 
