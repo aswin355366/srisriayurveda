@@ -39,6 +39,7 @@ import {
   DIET_CONSULTATION_FEATURES,
   DIET_MEAL_SCHEDULE,
   EDUCATIONAL_POSTERS,
+  CLINIC_GALLERY_IMAGES,
   GOOGLE_REVIEWS,
   type PackageCategory,
 } from './data/clinicData';
@@ -1869,6 +1870,62 @@ export default function App() {
                   </div>
                 </article>
               ))}
+            </div>
+
+            {/* Clinic Photographs */}
+            <div className="mt-14 border-t border-[#E2E6DF] pt-12">
+              <div className="max-w-2xl">
+                <p className="text-xs font-semibold tracking-wide text-[#B45F27] uppercase">
+                  Inside Our Clinic
+                </p>
+                <h3 className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-[#1A241E] sm:text-3xl text-balance">
+                  Our treatment rooms &amp; clinic spaces
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#3F4B43] sm:text-base">
+                  A calm, clean neighbourhood space near Thiruvambady Temple equipped for classical Kerala Ayurveda therapies.
+                </p>
+              </div>
+
+              <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {CLINIC_GALLERY_IMAGES.map((photo) => (
+                  <article
+                    key={photo.id}
+                    className="flex flex-col overflow-hidden rounded-xl border border-[#E2E6DF] bg-[#FAFAF7] p-3"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setModalPoster({
+                          title: photo.title,
+                          subtitle: `${CLINIC_INFO.brandFull} · Thrissur`,
+                          image: photo.image,
+                          packageIdForBooking: 'Doctor Consultation / Custom Therapy',
+                        })
+                      }
+                      className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#1C402B]"
+                    >
+                      <img
+                        src={photo.image}
+                        alt={`${photo.title} — ${photo.caption}`}
+                        referrerPolicy="no-referrer"
+                        className={`h-60 w-full object-cover ${photo.objectPositionClass} transition-transform duration-200 group-hover:scale-[1.03]`}
+                      />
+                      <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-medium text-white">
+                        <ZoomIn className="h-3.5 w-3.5" />
+                        View
+                      </span>
+                    </button>
+                    <div className="mt-3">
+                      <h4 className="font-display text-base font-semibold text-[#1A241E]">
+                        {photo.title}
+                      </h4>
+                      <p className="mt-1 text-xs leading-relaxed text-[#556158]">
+                        {photo.caption}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>

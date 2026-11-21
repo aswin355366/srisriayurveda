@@ -972,6 +972,45 @@ export const EDUCATIONAL_POSTERS: ClinicPosterItem[] = [
   },
 ];
 
+export interface ClinicGalleryItem {
+  id: string;
+  title: string;
+  caption: string;
+  image: string;
+  objectPositionClass: string;
+}
+
+export const CLINIC_GALLERY_IMAGES: ClinicGalleryItem[] = [
+  {
+    id: 'clinic-exterior',
+    title: 'Clinic Exterior',
+    caption: 'Pullat Lane, near Thiruvambady Temple, Thrissur',
+    image: '/assets/aistudio/unnamed_ebe50dc5.webp',
+    objectPositionClass: 'object-center',
+  },
+  {
+    id: 'clinic-reception',
+    title: 'Reception & Pharmacy',
+    caption: 'Welcoming waiting area & SriSri Ayurveda formulations',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-18_at_8.40.06_PM__1__684347c5.jpeg',
+    objectPositionClass: 'object-center',
+  },
+  {
+    id: 'panchakarma-room',
+    title: 'Therapy Room & Droni',
+    caption: 'Traditional wooden Droni table & brass Shirodhara setup',
+    image: '/assets/aistudio/unnamed__1__09b47520.webp',
+    objectPositionClass: 'object-[center_55%]',
+  },
+  {
+    id: 'steam-chamber',
+    title: 'Herbal Steam Chamber',
+    caption: 'Clean, private Swedana steam room for post-therapy care',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-18_at_8.40.09_PM_585bc89e.jpeg',
+    objectPositionClass: 'object-[center_35%]',
+  },
+];
+
 export interface GoogleReviewItem {
   id: string;
   rating: number;
