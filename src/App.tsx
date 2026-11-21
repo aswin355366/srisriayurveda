@@ -40,6 +40,7 @@ import {
   DIET_MEAL_SCHEDULE,
   EDUCATIONAL_POSTERS,
   CLINIC_GALLERY_IMAGES,
+  DOCTOR_ACHIEVEMENTS,
   GOOGLE_REVIEWS,
   type PackageCategory,
 } from './data/clinicData';
@@ -114,6 +115,7 @@ export default function App() {
   const [selectedFilter, setSelectedFilter] = useState<PackageCategory>('all');
   const [reviewsPaused, setReviewsPaused] = useState(false);
   const [heroReviewsPaused, setHeroReviewsPaused] = useState(false);
+  const [achievementsPaused, setAchievementsPaused] = useState(false);
   const [secondaryPosterToggle, setSecondaryPosterToggle] = useState<
     Record<string, boolean>
   >({});
@@ -1926,6 +1928,108 @@ export default function App() {
                   </article>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 5B: Doctor Achievements (Auto-Scrolling Left-to-Right) */}
+        <section
+          id="achievements"
+          className="border-t border-[#E2E6DF] bg-white py-12 sm:py-14 overflow-hidden"
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs font-semibold tracking-wide text-[#B45F27] uppercase">
+                  Doctor Achievements
+                </p>
+                <h3 className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-[#1A241E] sm:text-3xl text-balance">
+                  Awards, qualifications &amp; community honours
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#3F4B43] sm:text-base">
+                  Milestones and recognitions of {CLINIC_INFO.doctorName} ({CLINIC_INFO.doctorMalayalam}) — BAMS, PGDACT, PGDAN. Tap any photo to view full size.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setAchievementsPaused((prev) => !prev)}
+                aria-label={
+                  achievementsPaused
+                    ? 'Resume achievements scroll'
+                    : 'Pause achievements scroll'
+                }
+                className="inline-flex items-center gap-1.5 self-start rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] whitespace-nowrap shrink-0 sm:self-auto"
+              >
+                {achievementsPaused ? (
+                  <>
+                    <Play className="h-3.5 w-3.5" />
+                    Resume
+                  </>
+                ) : (
+                  <>
+                    <Pause className="h-3.5 w-3.5" />
+                    Pause
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="marquee-wrapper relative mt-8 w-full overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-white to-transparent sm:w-20"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-white to-transparent sm:w-20"
+            />
+
+            <div
+              className={`animate-scroll-ltr gap-5 px-4 ${
+                achievementsPaused ? 'animate-scroll-ltr-paused' : ''
+              }`}
+            >
+              {[...DOCTOR_ACHIEVEMENTS, ...DOCTOR_ACHIEVEMENTS].map((item, index) => (
+                <article
+                  key={`${item.id}-${index}`}
+                  className="flex w-72 shrink-0 flex-col overflow-hidden rounded-xl border border-[#E2E6DF] bg-[#FAFAF7] p-3 sm:w-80"
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setModalPoster({
+                        title: item.title,
+                        subtitle: `${CLINIC_INFO.doctorName} · ${CLINIC_INFO.brandFull}`,
+                        image: item.image,
+                        description: item.caption,
+                        packageIdForBooking: 'Doctor Consultation / Custom Therapy',
+                      })
+                    }
+                    className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
+                  >
+                    <img
+                      src={item.image}
+                      alt={`${item.title} — ${item.caption}`}
+                      referrerPolicy="no-referrer"
+                      className={`h-52 w-full ${item.imageClass} transition-transform duration-200 group-hover:scale-[1.03]`}
+                    />
+                    <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-medium text-white">
+                      <ZoomIn className="h-3.5 w-3.5" />
+                      View
+                    </span>
+                  </button>
+                  <div className="mt-3">
+                    <h4 className="font-display text-base font-semibold text-[#1A241E]">
+                      {item.title}
+                    </h4>
+                    <p className="mt-1 text-xs leading-relaxed text-[#556158]">
+                      {item.caption}
+                    </p>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>

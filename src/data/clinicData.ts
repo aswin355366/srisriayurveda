@@ -1011,6 +1011,87 @@ export const CLINIC_GALLERY_IMAGES: ClinicGalleryItem[] = [
   },
 ];
 
+export interface DoctorAchievementItem {
+  id: string;
+  title: string;
+  caption: string;
+  image: string;
+  imageClass: string;
+}
+
+export const DOCTOR_ACHIEVEMENTS: DoctorAchievementItem[] = [
+  {
+    id: 'mahila-ratna-memento',
+    title: 'Mahila Ratna Award',
+    caption: 'Dr. Anagha Aswin (BAMS, PGDACT, PGDAN) — Chief Consultant, SriSri Ayurveda Thrissur',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.39_AM_0174a65e.jpeg',
+    imageClass: 'object-contain bg-[#F2F4F0]',
+  },
+  {
+    id: 'mahila-ratna-presentation',
+    title: 'Mahila Ratna Recognition',
+    caption: 'Award presentation ceremony honouring clinical dedication in Ayurveda',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.11_AM_c1e24958.jpeg',
+    imageClass: 'object-cover object-[center_20%]',
+  },
+  {
+    id: 'pgdan-diploma',
+    title: 'PG Diploma in Ayurveda Nutrition',
+    caption: 'Graduating with Post Graduate Diploma in Ayurveda Nutrition (PGDAN)',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.13_AM__1__b1f96101.jpeg',
+    imageClass: 'object-cover object-[center_18%]',
+  },
+  {
+    id: 'convocation-medal',
+    title: 'Convocation Medal & Honours',
+    caption: 'Receiving convocation medal and academic certification on stage',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.13_AM_7535edc0.jpeg',
+    imageClass: 'object-cover object-[center_20%]',
+  },
+  {
+    id: 'thalikulam-felicitation',
+    title: 'Thalikulam Grama Panchayat Honour',
+    caption: 'Civic felicitation recognizing excellence in BAMS & community care',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.11_AM__2__bba47d09.jpeg',
+    imageClass: 'object-cover object-[center_20%]',
+  },
+  {
+    id: 'thalikulam-memento',
+    title: 'Snehadaram Civic Memento',
+    caption: 'Bachelor of Ayurvedic Medicine & Surgery academic excellence honour',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.36_AM_f737fac0.jpeg',
+    imageClass: 'object-contain bg-[#F2F4F0]',
+  },
+  {
+    id: 'bls-engandiyur-2022',
+    title: 'BLS Engandiyur Honour (2022)',
+    caption: 'Public recognition for community health outreach in Engandiyur',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.12_AM__1__65c0bc16.jpeg',
+    imageClass: 'object-cover object-[center_20%]',
+  },
+  {
+    id: 'bls-ponnada-felicitation',
+    title: 'Traditional Ponnada Felicitation',
+    caption: 'Honoured at the BLS Engandiyur 10th anniversary celebration',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.12_AM_2ecf164c.jpeg',
+    imageClass: 'object-cover object-[center_20%]',
+  },
+  {
+    id: 'community-award-2023',
+    title: 'Community Service Award (2023)',
+    caption: 'Felicitation with traditional shawl and merit memento',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.12_AM__2__be19e8ec.jpeg',
+    imageClass: 'object-cover object-[center_20%]',
+  },
+  {
+    id: 'free-ayurveda-camp',
+    title: 'Free Ayurveda Medical Camp',
+    caption: 'Medical consultation & free medicine distribution camp in Anthikkad',
+    image: '/assets/aistudio/WhatsApp_Image_2026-11-21_at_10.57.11_AM__1__1a1a6ce0.jpeg',
+    imageClass: 'object-contain bg-[#F2F4F0]',
+  },
+];
+
 export interface GoogleReviewItem {
   id: string;
   rating: number;
