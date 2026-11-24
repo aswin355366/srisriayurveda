@@ -453,6 +453,31 @@ export default function App() {
                   home visits—honest care for everyday families without luxury spa markups.
                 </p>
 
+                <div className="mt-4 max-w-xl">
+                  <p className="text-xs font-semibold tracking-wide text-[#B45F27] uppercase">
+                    Specialised Care For
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {[
+                      'Lifestyle disorders',
+                      'Gut issues',
+                      'Weight gain',
+                      'Pain management',
+                      'Joint disorders',
+                      'Wellness',
+                      'Acute hair and skin disorders',
+                      'Therapeutic yoga and exercise',
+                    ].map((area) => (
+                      <span
+                        key={area}
+                        className="rounded-md border border-[#D4DAD0] bg-white/90 px-2.5 py-1 text-xs font-medium text-[#1A241E]"
+                      >
+                        {area}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="mt-7 flex flex-wrap items-center gap-3">
                   <a
                     href="#packages"
