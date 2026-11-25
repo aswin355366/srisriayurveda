@@ -1102,9 +1102,16 @@ export interface GoogleReviewItem {
 
 export const GOOGLE_REVIEWS: GoogleReviewItem[] = [
   {
+    id: 'review-13',
+    rating: 5,
+    timeAgo: '2 days ago',
+    authorLabel: 'Google Review · Clinic & Therapy',
+    text: 'Had a good experience at the clinic. The doctor, therapist, and staff were all very helpful, friendly, and professional. Satisfied with the service.',
+  },
+  {
     id: 'review-12',
     rating: 5,
-    timeAgo: '18 hours ago',
+    timeAgo: '6 days ago',
     authorLabel: 'Google Review · Abhyanga Therapy',
     text: 'Had a very relaxing experience with Abhyanga. Thanks to Dr Anagha and therapist Devika.',
   },
