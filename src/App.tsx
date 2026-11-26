@@ -24,7 +24,6 @@ import {
 } from 'lucide-react';
 import {
   CLINIC_INFO,
-  PACKAGE_FILTERS,
   WELLNESS_PACKAGES,
   INDIVIDUAL_THERAPIES,
   EYE_TREATMENT_HEAD,
@@ -42,7 +41,6 @@ import {
   CLINIC_GALLERY_IMAGES,
   DOCTOR_ACHIEVEMENTS,
   GOOGLE_REVIEWS,
-  type PackageCategory,
 } from './data/clinicData';
 import { PosterModal } from './components/PosterModal';
 import { ConsultationFormModal } from './components/ConsultationFormModal';
@@ -97,6 +95,24 @@ function FacebookIcon({ className = 'h-4 w-4' }: { className?: string }) {
   );
 }
 
+function YouTubeIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+      <path d="m10 15 5-3-5-3v6Z" />
+    </svg>
+  );
+}
+
 function WhatsAppIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg
@@ -112,7 +128,6 @@ function WhatsAppIcon({ className = 'h-4 w-4' }: { className?: string }) {
 }
 
 export default function App() {
-  const [selectedFilter, setSelectedFilter] = useState<PackageCategory>('all');
   const [reviewsPaused, setReviewsPaused] = useState(false);
   const [heroReviewsPaused, setHeroReviewsPaused] = useState(false);
   const [achievementsPaused, setAchievementsPaused] = useState(false);
@@ -150,11 +165,6 @@ export default function App() {
     date: string;
     notes: string;
   } | null>(null);
-
-  const filteredPackages =
-    selectedFilter === 'all'
-      ? WELLNESS_PACKAGES
-      : WELLNESS_PACKAGES.filter((pkg) => pkg.category === selectedFilter);
 
   const panchakarmaTherapy = INDIVIDUAL_THERAPIES.find((t) => t.id === 'panchakarma');
   const panchakarmaSubTherapies = INDIVIDUAL_THERAPIES.filter((t) => t.id !== 'panchakarma');
@@ -247,12 +257,14 @@ export default function App() {
             href="#top"
             className="flex items-center gap-2.5 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
           >
-            <img
-              src={CLINIC_INFO.logoImage}
-              alt="SriSri Ayurveda logo"
-              referrerPolicy="no-referrer"
-              className="h-9 w-9 rounded-md object-contain"
-            />
+            <span className="inline-flex h-10 w-16 shrink-0 items-center justify-center overflow-hidden">
+              <img
+                src={CLINIC_INFO.logoImage}
+                alt="SriSri Ayurveda logo"
+                referrerPolicy="no-referrer"
+                className="h-full w-full scale-[2.25] object-contain mix-blend-multiply"
+              />
+            </span>
             <span className="font-display text-lg font-semibold tracking-tight text-[#1A241E]">
               {CLINIC_INFO.brandShort}
             </span>
@@ -314,6 +326,16 @@ export default function App() {
               className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#E2E6DF] bg-white text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
             >
               <FacebookIcon className="h-4 w-4" />
+            </a>
+            <a
+              href={CLINIC_INFO.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SriSri Ayurveda on YouTube"
+              title="YouTube"
+              className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#E2E6DF] bg-white text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
+            >
+              <YouTubeIcon className="h-4 w-4" />
             </a>
             <a
               href="#book"
@@ -379,24 +401,33 @@ export default function App() {
               >
                 Location & Hours
               </a>
-              <div className="flex items-center gap-3 pt-1">
+              <div className="grid grid-cols-3 gap-2 pt-1">
                 <a
                   href={CLINIC_INFO.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#D4DAD0] bg-white px-3 py-2 text-xs font-medium text-[#1A241E] hover:border-[#1E4631] hover:text-[#1E4631]"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#D4DAD0] bg-white px-2.5 py-2 text-xs font-medium text-[#1A241E] hover:border-[#1E4631] hover:text-[#1E4631]"
                 >
-                  <InstagramIcon className="h-4 w-4" />
+                  <InstagramIcon className="h-4 w-4 shrink-0" />
                   Instagram
                 </a>
                 <a
                   href={CLINIC_INFO.facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#D4DAD0] bg-white px-3 py-2 text-xs font-medium text-[#1A241E] hover:border-[#1E4631] hover:text-[#1E4631]"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#D4DAD0] bg-white px-2.5 py-2 text-xs font-medium text-[#1A241E] hover:border-[#1E4631] hover:text-[#1E4631]"
                 >
-                  <FacebookIcon className="h-4 w-4" />
+                  <FacebookIcon className="h-4 w-4 shrink-0" />
                   Facebook
+                </a>
+                <a
+                  href={CLINIC_INFO.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#D4DAD0] bg-white px-2.5 py-2 text-xs font-medium text-[#1A241E] hover:border-[#1E4631] hover:text-[#1E4631]"
+                >
+                  <YouTubeIcon className="h-4 w-4 shrink-0" />
+                  YouTube
                 </a>
               </div>
               <a
@@ -689,8 +720,8 @@ export default function App() {
           className="border-t border-[#E2E6DF] bg-white py-14 sm:py-16"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div className="max-w-2xl">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
+              <div className="lg:col-span-7">
                 <p className="text-xs font-semibold tracking-wide text-[#B45F27] uppercase">
                   Wellness Packages
                 </p>
@@ -704,86 +735,72 @@ export default function App() {
                 </p>
               </div>
 
-              {/* Interactive Segmented Filter Controls */}
-              <div
-                role="tablist"
-                aria-label="Filter wellness packages"
-                className="flex flex-wrap items-center gap-1.5 rounded-lg bg-[#F2F4F0] p-1"
-              >
-                {PACKAGE_FILTERS.map((filter) => {
-                  const isActive = selectedFilter === filter.id;
-                  return (
-                    <button
-                      key={filter.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={isActive}
-                      onClick={() => setSelectedFilter(filter.id)}
-                      className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                        isActive
-                          ? 'bg-white text-[#1A241E] shadow-xs'
-                          : 'text-[#556158] hover:text-[#1A241E]'
-                      }`}
-                    >
-                      {filter.label}
-                    </button>
-                  );
-                })}
+              {/* What Makes Our Packages Special */}
+              <div className="rounded-xl border border-[#D4E2D8] bg-[#F5F9F6] p-5 lg:col-span-5">
+                <p className="text-xs font-semibold tracking-wide text-[#B45F27] uppercase">
+                  What Makes Our Packages Special
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-[#2C3A31]">
+                  Every package features four therapeutic oils for the body, paired with two
+                  additional specialized formulations dedicated to the head and face. Combined
+                  with a personalized doctor&apos;s consultation, each treatment ensures tailored
+                  care and optimal results.
+                </p>
               </div>
             </div>
 
-            {/* Package Cards Grid */}
+            {/* Package Poster Cards Grid */}
             <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredPackages.map((pkg) => {
+              {WELLNESS_PACKAGES.map((pkg) => {
+                const isHomeCategory = pkg.category === 'home-care';
                 const showingSecondary =
                   Boolean(pkg.secondaryPoster) && Boolean(secondaryPosterToggle[pkg.id]);
-                const displayedPoster =
+                const activePoster =
                   showingSecondary && pkg.secondaryPoster
                     ? pkg.secondaryPoster
                     : pkg.poster;
-                const isHomeCategory = pkg.category === 'home-care';
+
+                const openModal = () =>
+                  setModalPoster({
+                    title: pkg.name,
+                    subtitle: pkg.malayalamName
+                      ? `${pkg.malayalamName} · ${pkg.setting}`
+                      : pkg.setting,
+                    image: pkg.poster,
+                    secondaryImage: pkg.secondaryPoster,
+                    description: pkg.fullDescription,
+                    malayalamNote: pkg.malayalamNote,
+                    includedItems: pkg.includedSteps,
+                    idealFor: pkg.idealFor,
+                    packageIdForBooking: `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
+                    bookingVisitType: isHomeCategory ? 'home' : 'clinic',
+                  });
 
                 return (
                   <article
                     key={pkg.id}
-                    className="flex flex-col overflow-hidden rounded-xl border border-[#E2E6DF] bg-[#FAFAF7]"
+                    className="flex flex-col justify-between overflow-hidden rounded-xl border border-[#E2E6DF] bg-[#FAFAF7] p-4"
                   >
-                    {/* Poster Visual Frame */}
-                    <div className="relative bg-[#F2F4F0] p-4">
+                    <div>
                       <button
                         type="button"
-                        onClick={() =>
-                          setModalPoster({
-                            title: pkg.name,
-                            subtitle: pkg.malayalamName
-                              ? `${pkg.malayalamName} · ${pkg.setting}`
-                              : pkg.setting,
-                            image: displayedPoster,
-                            secondaryImage: pkg.secondaryPoster,
-                            description: pkg.fullDescription,
-                            malayalamNote: pkg.malayalamNote,
-                            includedItems: pkg.includedSteps,
-                            idealFor: pkg.idealFor,
-                            packageIdForBooking: `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
-                          })
-                        }
-                        className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#1C402B]/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E4631]"
-                        aria-label={`Enlarge poster for ${pkg.name}`}
+                        onClick={openModal}
+                        className="group relative flex h-64 w-full items-center justify-center overflow-hidden rounded-lg bg-[#EFEFEA]"
                       >
                         <img
-                          src={displayedPoster}
-                          alt={`${pkg.name} clinic poster`}
+                          src={activePoster}
+                          alt={`${pkg.name} poster`}
                           referrerPolicy="no-referrer"
-                          className="h-60 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02] sm:h-64"
+                          className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                         />
-                        <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 rounded-md bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
+                        <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 rounded-md bg-black/75 px-2.5 py-1 text-xs font-medium text-white">
                           <ZoomIn className="h-3.5 w-3.5" />
                           View Poster
                         </span>
                       </button>
 
                       {pkg.secondaryPoster && (
-                        <div className="mt-2.5 flex items-center justify-end gap-2">
+                        <div className="mt-2.5 flex justify-end gap-1.5">
                           <button
                             type="button"
                             onClick={() =>
@@ -792,10 +809,10 @@ export default function App() {
                                 [pkg.id]: false,
                               }))
                             }
-                            className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                            className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                               !showingSecondary
                                 ? 'bg-[#1E4631] text-white'
-                                : 'bg-white text-[#556158] hover:text-[#1A241E]'
+                                : 'border border-[#E2E6DF] bg-white text-[#556158] hover:text-[#1A241E]'
                             }`}
                           >
                             Poster 1
@@ -808,28 +825,22 @@ export default function App() {
                                 [pkg.id]: true,
                               }))
                             }
-                            className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
+                            className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                               showingSecondary
                                 ? 'bg-[#1E4631] text-white'
-                                : 'bg-white text-[#556158] hover:text-[#1A241E]'
+                                : 'border border-[#E2E6DF] bg-white text-[#556158] hover:text-[#1A241E]'
                             }`}
                           >
                             Poster 2
                           </button>
                         </div>
                       )}
-                    </div>
 
-                    {/* Card Details */}
-                    <div className="flex flex-1 flex-col justify-between p-5">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#556158]">
-                          <span>{pkg.categoryLabel}</span>
-                          <span aria-hidden="true">·</span>
-                          <span>{pkg.setting}</span>
-                        </div>
-
-                        <h3 className="mt-2 font-display text-xl font-semibold text-[#1A241E]">
+                      <div className={pkg.secondaryPoster ? 'mt-3' : 'mt-4'}>
+                        <p className="text-xs font-medium text-[#556158]">
+                          {pkg.categoryLabel} · {pkg.setting}
+                        </p>
+                        <h3 className="mt-1.5 font-display text-xl font-semibold text-[#1A241E]">
                           {pkg.name}
                         </h3>
                         {pkg.malayalamName && (
@@ -837,48 +848,33 @@ export default function App() {
                             {pkg.malayalamName}
                           </p>
                         )}
-
                         <p className="mt-2.5 text-sm leading-relaxed text-[#3F4B43]">
                           {pkg.summary}
                         </p>
                       </div>
+                    </div>
 
-                      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-4">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleSelectForBooking(
-                              `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
-                              isHomeCategory ? 'home' : 'clinic'
-                            )
-                          }
-                          className="inline-flex items-center gap-2 rounded-lg bg-[#1E4631] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
-                        >
-                          <Calendar className="h-4 w-4" />
-                          Book This Package
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setModalPoster({
-                              title: pkg.name,
-                              subtitle: pkg.malayalamName
-                                ? `${pkg.malayalamName} · ${pkg.setting}`
-                                : pkg.setting,
-                              image: displayedPoster,
-                              secondaryImage: pkg.secondaryPoster,
-                              description: pkg.fullDescription,
-                              malayalamNote: pkg.malayalamNote,
-                              includedItems: pkg.includedSteps,
-                              idealFor: pkg.idealFor,
-                              packageIdForBooking: `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
-                            })
-                          }
-                          className="text-sm font-medium text-[#1E4631] hover:underline underline-offset-4 whitespace-nowrap shrink-0"
-                        >
-                          Read Full Poster
-                        </button>
-                      </div>
+                    <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#E2E6DF] pt-4">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSelectForBooking(
+                            `${pkg.name}${pkg.malayalamName ? ` (${pkg.malayalamName})` : ''}`,
+                            isHomeCategory ? 'home' : 'clinic'
+                          )
+                        }
+                        className="inline-flex items-center gap-2 rounded-lg bg-[#1E4631] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#163625] whitespace-nowrap shrink-0"
+                      >
+                        <Calendar className="h-3.5 w-3.5" />
+                        Book This Package
+                      </button>
+                      <button
+                        type="button"
+                        onClick={openModal}
+                        className="text-xs font-semibold text-[#1E4631] hover:underline underline-offset-4 whitespace-nowrap shrink-0"
+                      >
+                        Read Full Poster
+                      </button>
                     </div>
                   </article>
                 );
@@ -2153,6 +2149,15 @@ export default function App() {
                       <FacebookIcon className="h-3.5 w-3.5 text-[#1E4631]" />
                       Facebook
                     </a>
+                    <a
+                      href={CLINIC_INFO.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#D4DAD0] bg-[#FAFAF7] px-3 py-1.5 text-xs font-medium text-[#1A241E] transition-colors hover:border-[#1E4631] hover:text-[#1E4631]"
+                    >
+                      <YouTubeIcon className="h-3.5 w-3.5 text-[#1E4631]" />
+                      YouTube
+                    </a>
                   </div>
                 </div>
 
@@ -2701,12 +2706,14 @@ export default function App() {
       <footer className="border-t border-[#E2E6DF] bg-white py-8">
         <div className="mx-auto flex max-w-6xl flex-col justify-between gap-6 px-4 sm:flex-row sm:items-center sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <img
-              src={CLINIC_INFO.logoImage}
-              alt="SriSri Ayurveda logo"
-              referrerPolicy="no-referrer"
-              className="h-9 w-9 rounded-md object-contain"
-            />
+            <span className="inline-flex h-10 w-16 shrink-0 items-center justify-center overflow-hidden">
+              <img
+                src={CLINIC_INFO.logoImage}
+                alt="SriSri Ayurveda logo"
+                referrerPolicy="no-referrer"
+                className="h-full w-full scale-[2.25] object-contain mix-blend-multiply"
+              />
+            </span>
             <div>
               <p className="font-display text-sm font-semibold text-[#1A241E]">
                 {CLINIC_INFO.brandFull} · {CLINIC_INFO.malayalamBrand}
@@ -2759,6 +2766,16 @@ export default function App() {
                 className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E6DF] bg-[#FAFAF7] text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631]"
               >
                 <FacebookIcon className="h-4 w-4" />
+              </a>
+              <a
+                href={CLINIC_INFO.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="SriSri Ayurveda on YouTube"
+                title="YouTube"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E6DF] bg-[#FAFAF7] text-[#3F4B43] transition-colors hover:border-[#1E4631] hover:text-[#1E4631]"
+              >
+                <YouTubeIcon className="h-4 w-4" />
               </a>
             </div>
           </div>

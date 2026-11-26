@@ -56,8 +56,9 @@ export const CLINIC_INFO = {
   googleBusinessUrl: 'https://share.google/lerZByQwKda1jb3hD',
   instagramUrl: 'https://www.instagram.com/srisri_ayurveda_/',
   facebookUrl: 'https://www.facebook.com/profile.php?id=61552685338486',
+  youtubeUrl: 'https://www.youtube.com/@SrisriAyurvedatcr',
   googleRating: '4.9',
-  logoImage: '/assets/aistudio/Logo_3da16dce.png',
+  logoImage: '/assets/aistudio/Gemini_Generated_Image_328jdj328jdj328j_3da16dce.png',
   locationMapImage: '/assets/aistudio/Location_6fcacb65.png',
   googleBadgeImage: '/assets/aistudio/Google-Reviews_43b672bf.webp',
   addressLines: [
@@ -174,7 +175,6 @@ export const WELLNESS_PACKAGES: WellnessPackage[] = [
     ],
     idealFor: 'Working professionals, homemakers, and travellers looking for a complete 1-day reset.',
     poster: '/assets/aistudio/Untitled_-_02_February_2026_at_17.14.13__3___1___1___1___2___1___16__9943f644.png',
-    secondaryPoster: '/assets/aistudio/Untitled_-_July_24__2026_at_10.32.22__3__74ec13b7.png',
     featured: true,
   },
   {
