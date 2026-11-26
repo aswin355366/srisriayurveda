@@ -1718,7 +1718,7 @@ export default function App() {
                       className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
                     >
                       <img
-                        src="/assets/aistudio/final_-2_c07cdc72.jpg"
+                        src="/assets/aistudio/final_-2_c07cdc72.webp"
                         alt="Amritam Geriatric Rejuvenation Home Service poster"
                         referrerPolicy="no-referrer"
                         className="h-64 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
@@ -1757,7 +1757,7 @@ export default function App() {
                       className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
                     >
                       <img
-                        src="/assets/aistudio/Untitled_-_08_June_2026_at_14.23.46_84304245.png"
+                        src="/assets/aistudio/Untitled_-_08_June_2026_at_14.23.46_84304245.webp"
                         alt="Ayurvedic Prasavaraksha mother and baby home care poster"
                         referrerPolicy="no-referrer"
                         className="h-64 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
@@ -1795,13 +1795,13 @@ export default function App() {
                       onClick={() =>
                         openPackageById(
                           'home-service',
-                          '/assets/aistudio/home_service_new_9f602148.png'
+                          '/assets/aistudio/home_service_new_9f602148.webp'
                         )
                       }
                       className="group relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-[#F2F4F0]"
                     >
                       <img
-                        src="/assets/aistudio/home_service_new_9f602148.png"
+                        src="/assets/aistudio/home_service_new_9f602148.webp"
                         alt="SriSri Ayurveda Home Service poster"
                         referrerPolicy="no-referrer"
                         className="h-64 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
